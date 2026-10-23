@@ -83,7 +83,7 @@ CREATE TABLE `proyectos` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_proyectos_slug` (`slug`),
     KEY `idx_proyectos_categoria` (`categoria_id`),
-    KEY `idx_proyectos_estado` (`estado`),
+    KEY `idx_proyectos_estado` (`estado`,`creado_en`),
     KEY `idx_proyectos_responsable` (`responsable_id`),
     CONSTRAINT `fk_proyectos_categoria`   FOREIGN KEY (`categoria_id`)   REFERENCES `categorias`(`id`)     ON DELETE RESTRICT,
     CONSTRAINT `fk_proyectos_responsable` FOREIGN KEY (`responsable_id`) REFERENCES `usuarios`(`id`)      ON DELETE SET NULL
@@ -198,6 +198,7 @@ CREATE TABLE `noticias` (
     KEY `idx_noticias_estado` (`estado`,`destacada`),
     KEY `idx_noticias_autor`  (`autor_id`),
     KEY `idx_noticias_fecha`  (`fecha_publicacion`),
+    KEY `idx_noticias_creado` (`creado_en`),
     CONSTRAINT `fk_noticias_autor`     FOREIGN KEY (`autor_id`)     REFERENCES `usuarios`(`id`) ON DELETE SET NULL,
     CONSTRAINT `fk_noticias_aprobador` FOREIGN KEY (`aprobado_por`) REFERENCES `usuarios`(`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -223,7 +224,7 @@ CREATE TABLE `media` (
     `creado_en`      DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_media_guardado` (`nombre_guardado`),
-    KEY `idx_media_entidad` (`entidad_tipo`,`entidad_id`),
+    KEY `idx_media_entidad` (`entidad_tipo`,`entidad_id`,`es_principal`),
     KEY `idx_media_tipo` (`tipo`),
     CONSTRAINT `fk_media_subidor` FOREIGN KEY (`subido_por`) REFERENCES `usuarios`(`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -262,7 +263,95 @@ CREATE TABLE `eventos_seguridad` (
     KEY `idx_eventos_usuario` (`usuario`,`tipo`,`creado_en`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- ------------------------------------------------------------
+-- Tabla: migraciones  (registro de esquema aplicado)
+--   La usa backend/bin/migrar.php. Cada archivo
+--   backend/database/migraciones/NNNN_*.sql deja una fila acá.
+-- ------------------------------------------------------------
+DROP TABLE IF EXISTS `migraciones`;
+CREATE TABLE `migraciones` (
+    `id`          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `archivo`     VARCHAR(120) NOT NULL,
+    `checksum`    CHAR(64)     NOT NULL,
+    `aplicado_en` DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_migraciones_archivo` (`archivo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- Tabla: config_sitio  (ajustes que se cambian desde el panel)
+--   Clave/valor en texto; la capa backend/lib/config_sitio.php
+--   cachea en memoria por petición.
+-- ------------------------------------------------------------
+DROP TABLE IF EXISTS `config_sitio`;
+CREATE TABLE `config_sitio` (
+    `clave`      VARCHAR(60)  NOT NULL,
+    `valor`      TEXT         NULL,
+    `actualizado_en` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+                                ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`clave`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 SET FOREIGN_KEY_CHECKS = 1;
+
+-- ============================================================
+--  VISTAS  (consultas de lectura que reutilizan el panel y el sitio)
+-- ============================================================
+
+-- Ficha resumida de proyectos: categoría, responsable y avance medio
+-- de sus hitos (NULL si el proyecto no tiene hitos cargados).
+CREATE OR REPLACE VIEW `v_proyectos_resumen` AS
+SELECT p.`id`, p.`titulo`, p.`slug`, p.`estado`, p.`version_actual`,
+       p.`tecnologias`, p.`descripcion_corta`, p.`fecha_inicio`,
+       p.`fecha_actualizacion`, p.`creado_en`,
+       c.`nombre`     AS categoria_nombre,
+       c.`slug`       AS categoria_slug,
+       u.`nombre`     AS responsable_nombre,
+       u.`apellido`   AS responsable_apellido,
+       (SELECT COUNT(*) FROM `articulos` a
+         WHERE a.`proyecto_id` = p.`id` AND a.`publicado` = 1) AS articulos_publicados,
+       (SELECT COUNT(*) FROM `articulos` a
+         WHERE a.`proyecto_id` = p.`id`)                        AS articulos_total,
+       (SELECT ROUND(AVG(h.`porcentaje_avance`))
+          FROM `hitos` h WHERE h.`proyecto_id` = p.`id`)        AS avance_medio
+  FROM `proyectos` p
+  LEFT JOIN `categorias` c ON c.`id` = p.`categoria_id`
+  LEFT JOIN `usuarios`   u ON u.`id` = p.`responsable_id`;
+
+-- Artículos publicados con los datos del proyecto (listados de la wiki).
+CREATE OR REPLACE VIEW `v_articulos_publicados` AS
+SELECT a.`id`, a.`titulo`, a.`slug`, a.`resumen`, a.`tipo`, a.`version`,
+       a.`actualizado`, a.`creado_en`,
+       p.`id`     AS proyecto_id,
+       p.`titulo` AS proyecto_titulo,
+       p.`slug`   AS proyecto_slug,
+       u.`nombre` AS autor_nombre, u.`apellido` AS autor_apellido
+  FROM `articulos` a
+  JOIN `proyectos` p ON p.`id` = a.`proyecto_id`
+  LEFT JOIN `usuarios` u ON u.`id` = a.`autor_id`
+ WHERE a.`publicado` = 1;
+
+-- Noticias visibles para el público (ya aprobadas y con fecha de
+-- publicación); la portada destaca con `destacada`.
+CREATE OR REPLACE VIEW `v_noticias_publicadas` AS
+SELECT n.`id`, n.`titulo`, n.`slug`, n.`resumen`, n.`categoria`,
+       n.`destacada`, n.`fecha_publicacion`, n.`creado_en`,
+       u.`nombre` AS autor_nombre, u.`apellido` AS autor_apellido
+  FROM `noticias` n
+  LEFT JOIN `usuarios` u ON u.`id` = n.`autor_id`
+ WHERE n.`estado` = 'publicada'
+   AND n.`fecha_publicacion` IS NOT NULL;
+
+-- Cola de moderación: quién revisó qué y cuándo quedó fuera.
+CREATE OR REPLACE VIEW `v_noticias_moderacion` AS
+SELECT n.`id`, n.`titulo`, n.`slug`, n.`estado`, n.`razon_rechazo`,
+       n.`creado_en`, n.`fecha_publicacion`,
+       a.`nombre` AS autor_nombre, a.`apellido` AS autor_apellido,
+       r.`nombre` AS revisor_nombre, r.`apellido` AS revisor_apellido
+  FROM `noticias` n
+  LEFT JOIN `usuarios` a ON a.`id` = n.`autor_id`
+  LEFT JOIN `usuarios` r ON r.`id` = n.`aprobado_por`
+ WHERE n.`estado` IN ('pendiente','rechazada');
 
 -- ============================================================
 --  DATOS INICIALES
@@ -330,3 +419,59 @@ VALUES
  'El departamento de desarrollo presenta sus avances en videojuegos educativos y simuladores nacionales.',
  '<p>El equipo de desarrollo de Telecom Venezuela, C.A. presentó sus avances en el portafolio de software recreativo nacional, destacando el videojuego Batalla Bicentenaria y tres nuevos simuladores educativos en fase de prototipado.</p><p>Estas iniciativas se enmarcan en la política de soberanía tecnológica promovida por el Estado venezolano y buscan reemplazar progresivamente el software recreativo extranjero en los centros educativos nacionales.</p>',
  'Desarrollo',1,'publicada',1,1,NOW());
+
+-- Ajustes iniciales del sitio (se editan desde Panel → Diagnóstico)
+INSERT INTO `config_sitio` (`clave`,`valor`) VALUES
+('mantenimiento','0'),
+('titulo_portada','TelecomWiki — Documentación Técnica'),
+('contacto_institucional','desarrollo@telecom.gob.ve');
+
+-- Segundo proyecto de ejemplo
+INSERT INTO `proyectos`
+ (`titulo`,`slug`,`categoria_id`,`descripcion_corta`,`descripcion`,`tecnologias`,`version_actual`,`estado`,`responsable_id`,`fecha_inicio`)
+VALUES
+('Simulador de Centrales Virtuales','simulador-de-centrales-virtuales',4,
+ 'Simulación de operación y mantenimiento de centrales telefónicas.',
+ '<p>Simulador interactivo para la formación de técnicos en la operación, diagnóstico y mantenimiento de centrales telefónicas, con escenarios basados en instalaciones reales de Telecom Venezuela.</p>',
+ 'C#, Unity, MySQL','1.2.0','activo',2,'2024-09-01');
+
+-- Artículos de ejemplo (uno por tipo documental)
+INSERT INTO `articulos`
+ (`proyecto_id`,`titulo`,`slug`,`resumen`,`contenido`,`tipo`,`autor_id`,`publicado`)
+VALUES
+(1,'Guion narrativo del capítulo uno','batalla-bicentenaria-guion-capitulo-uno',
+ 'Estructura de misiones y diálogos del primer capítulo.',
+ '<h2>Objetivo del capítulo</h2><p>Introducir al jugador en la campaña de 1810 con tres misiones tutoriales y un jefe de nivel.</p><ul><li>Misión 1: reclutamiento.</li><li>Misión 2: primer combate.</li><li>Misión 3: defensa del puente.</li></ul>',
+ 'guion',2,1),
+(1,'Mecánica de combate por turnos','batalla-bicentenaria-mecanica-combate',
+ 'Reglas de combate, iniciativa y tipos de unidad.',
+ '<h2>Reglas base</h2><p>Cada unidad tiene movimiento, ataque y moral. La iniciativa se resuelve por velocidad acumulada del bando.</p>',
+ 'mecanica',1,1),
+(2,'Instalación y puesta en marcha','simulador-de-centrales-virtuales-instalacion',
+ 'Requisitos y pasos para instalar el simulador.',
+ '<h2>Requisitos</h2><ul><li>Windows 10 o superior.</li><li>4 GB de RAM.</li><li>Resolución 1280×720 o superior.</li></ul>',
+ 'tecnico',2,1);
+
+-- Noticias de ejemplo: una pendiente de moderación y una rechazada
+INSERT INTO `noticias`
+ (`titulo`,`slug`,`resumen`,`contenido`,`categoria`,`autor_id`,`estado`,`destacada`,`razon_rechazo`)
+VALUES
+('Convocatoria: taller de documentación técnica con Git','convocatoria-taller-documentacion-tecnica-git',
+ 'Taller práctico para el personal del departamento de desarrollo.',
+ '<p>Se convoca al personal a un taller práctico sobre control de versiones con Git y buenas prácticas de documentación.</p>',
+ 'Formación',2,'pendiente',0,NULL),
+('Promoción de software recreativo extranjero','promocion-software-recreativo-extranjero',
+ 'Nota promocional de terceros.',
+ '<p>Contenido promocional sin relación con la institución.</p>',
+ 'Institucional',2,'rechazada',0,
+ 'La nota es publicidad de terceros y no corresponde al portal institucional.');
+
+-- Mensajes de contacto de ejemplo (para la bandeja del panel)
+INSERT INTO `mensajes_contacto` (`nombre`,`email`,`mensaje`,`ip`,`leido`) VALUES
+('Ana Rivas','ana.rivas@ejemplo.com',
+ 'Consulta sobre el uso del simulador de centrales en el taller de formación.','127.0.0.1',0),
+('Jorge Márquez','jorge.marquez@ejemplo.com',
+ 'Solicito acceso a la documentación del proyecto Batalla Bicentenaria para la revisión de la dirección.','127.0.0.1',0);
+
+-- Artículos de ejemplo adicionales y relaciones de etiquetas
+INSERT INTO `articulo_tags` (`articulo_id`,`tag_id`) VALUES (2,1),(4,2);
