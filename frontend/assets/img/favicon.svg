@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="TelecomWiki">
+  <rect width="64" height="64" rx="14" fill="#0B2447"/>
+  <g fill="none" stroke="#E8B753" stroke-width="4" stroke-linecap="round">
+    <path d="M32 44V26"/>
+    <path d="M23 22a13 13 0 0 1 18 0"/>
+    <path d="M17 16a21 21 0 0 1 30 0"/>
+  </g>
+  <circle cx="32" cy="47" r="4" fill="#2563EB"/>
+</svg>

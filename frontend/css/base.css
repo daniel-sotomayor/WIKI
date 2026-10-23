@@ -1,0 +1,321 @@
+/* ============================================================
+   TELECOMWIKI — base.css
+   Variables, reset, tipografía, utilidades y componentes atómicos
+   (insignias, chips, alertas, paginación, barra de avance).
+
+   Paleta: azul marino institucional + dorado venezolano + blanco.
+   Tipografía: pila del sistema (sin peticiones a terceros, compatible
+   con la política de seguridad de contenidos y usable sin internet).
+   ============================================================ */
+
+:root {
+  /* ── Color ── */
+  --navy:      #0B1F3A;
+  --navy-mid:  #163050;
+  --blue:      #1B4F8A;
+  --blue-lt:   #2563EB;
+  --gold:      #D4A017;
+  --gold-lt:   #F5C842;
+
+  --white:     #FFFFFF;
+  --off-white: #F3F6FA;
+  --grey-100:  #EAF0F8;
+  --grey-300:  #C8D5E6;
+  --grey-500:  #7A92AD;
+  --grey-700:  #3D5168;
+
+  --text:       #1A2B3C;
+  --text-muted: #5A7490;
+
+  /* ── Semáforo ── */
+  --ok-bg:     #DCFCE7;   --ok-fg:     #166534;
+  --warn-bg:   #FEF3C7;   --warn-fg:   #92400E;
+  --danger-bg: #FEE2E2;   --danger-fg: #991B1B;
+  --info-bg:   #DBEAFE;   --info-fg:   #1E40AF;
+
+  /* ── Forma y sombra ── */
+  --radius:    6px;
+  --radius-md: 9px;
+  --radius-lg: 12px;
+  --shadow-sm: 0 1px 3px rgba(11,31,58,.10);
+  --shadow-md: 0 4px 16px rgba(11,31,58,.13);
+  --shadow-lg: 0 8px 32px rgba(11,31,58,.18);
+
+  /* ── Tipografía ── */
+  --font-body:    system-ui, -apple-system, "Segoe UI", Roboto,
+                  "Helvetica Neue", Arial, sans-serif;
+  --font-display: ui-sans-serif, system-ui, -apple-system,
+                  "Segoe UI", Roboto, sans-serif;
+  --font-mono:    ui-monospace, SFMono-Regular, "SF Mono", Menlo,
+                  Consolas, "Liberation Mono", monospace;
+
+  --transition: 180ms ease;
+}
+
+/* ── Reset ─────────────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text);
+  background: var(--off-white);
+  -webkit-font-smoothing: antialiased;
+}
+
+img, svg, video { max-width: 100%; display: block; }
+ul, ol { list-style: none; }
+
+a { color: var(--blue-lt); text-decoration: none; transition: color var(--transition); }
+a:hover { color: var(--gold); }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--navy);
+  line-height: 1.25;
+}
+
+code, kbd, pre { font-family: var(--font-mono); font-size: .9em; }
+code { background: var(--grey-100); padding: .1em .4em; border-radius: 4px; }
+
+/* Foco visible siempre (accesibilidad WCAG 2.4.7) */
+:focus-visible {
+  outline: 3px solid var(--blue-lt);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Respeto por quienes reducen el movimiento (WCAG 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    transition-duration: .001ms !important;
+  }
+}
+
+/* ── Utilidades de accesibilidad ──────────────────────────── */
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 999;
+  background: var(--navy);
+  color: #fff;
+  padding: .6rem 1rem;
+  font-weight: 600;
+}
+.skip-link:focus { left: 0; color: #fff; }
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.muted      { color: var(--text-muted); }
+.destacado  { color: var(--gold-lt); }
+.bloque     { display: block; }
+.texto-sm   { font-size: .82rem; }
+
+/* ── Contenedores ─────────────────────────────────────────── */
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  width: 100%;
+}
+
+.container--narrow { max-width: 820px; }
+.container--form   { max-width: 860px; }
+.container--panel  { max-width: 1140px; }
+.container--prosa  { max-width: 940px; }
+
+/* ── Rejillas responsivas ─────────────────────────────────── */
+
+.rejilla { display: grid; gap: 1.25rem; }
+.rejilla--2 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.rejilla--3 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.rejilla--4 { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+.rejilla--5 { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+
+/* ── Alertas ──────────────────────────────────────────────── */
+
+.alert {
+  padding: .85rem 1.25rem;
+  border-radius: var(--radius);
+  margin-bottom: 1.25rem;
+  font-size: .9rem;
+  border-left: 4px solid;
+}
+.alert ul { padding-left: 1.1rem; list-style: disc; }
+.alert li { margin: .15rem 0; }
+.alert-danger  { background: var(--danger-bg); color: var(--danger-fg); border-color: #EF4444; }
+.alert-success { background: var(--ok-bg);     color: var(--ok-fg);     border-color: #22C55E; }
+.alert-info    { background: var(--info-bg);   color: var(--info-fg);   border-color: #3B82F6; }
+.alert-warning { background: var(--warn-bg);   color: var(--warn-fg);   border-color: #F59E0B; }
+
+/* ── Insignias de estado y rol ────────────────────────────── */
+
+.status-badge {
+  display: inline-block;
+  font-size: .7rem;
+  font-weight: 600;
+  padding: .25rem .6rem;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+
+.status-activo,
+.status-publicada      { background: var(--ok-bg);     color: var(--ok-fg); }
+.status-en_desarrollo  { background: var(--info-bg);   color: var(--info-fg); }
+.status-pausado,
+.status-pendiente      { background: var(--warn-bg);   color: var(--warn-fg); }
+.status-archivado,
+.status-borrador,
+.status-inactivo       { background: var(--grey-100);  color: var(--grey-700); }
+.status-rechazada      { background: var(--danger-bg); color: var(--danger-fg); }
+
+.role-tag {
+  display: inline-block;
+  font-size: .68rem;
+  padding: .1rem .5rem;
+  border-radius: 99px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: .05em;
+  white-space: nowrap;
+}
+.role-admin      { background: #FEF9C3; color: #854D0E; }
+.role-supervisor { background: #EDE9FE; color: #6D28D9; }
+.role-editor     { background: #DBEAFE; color: #1E40AF; }
+.role-lector     { background: var(--grey-100); color: var(--grey-700); }
+
+/* ── Chips (categorías, etiquetas, contadores) ─────────────── */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  font-size: .7rem;
+  font-weight: 700;
+  padding: .2rem .6rem;
+  border-radius: 99px;
+  letter-spacing: .03em;
+  white-space: nowrap;
+}
+.chip--cat        { background: var(--info-bg);  color: var(--info-fg); text-transform: uppercase; }
+.chip--tag        { background: var(--grey-100); color: var(--grey-700); text-transform: lowercase; }
+.chip--tipo       { background: #FDF4E3;         color: var(--gold); text-transform: uppercase; }
+.chip--version    { background: var(--navy);     color: var(--gold-lt); }
+.chip--destacada  { background: var(--gold);     color: var(--navy); }
+.chip--aviso      { background: var(--warn-bg);  color: var(--warn-fg); }
+
+.chips { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+
+/* ── Iconos inline (helpers.php::icono) ───────────────────── */
+
+.icon {
+  display: inline-block;
+  vertical-align: -0.14em;
+  flex-shrink: 0;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── Barra de avance (pasos de 5 %) ───────────────────────── */
+/* Los anchos se fijan por clase para no necesitar estilos
+   en línea (la CSP no permite style="…" suelto). */
+
+.progress {
+  position: relative;
+  width: 100%;
+  height: 10px;
+  background: var(--grey-100);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.progress--sm { height: 6px; }
+.progress--lg { height: 16px; }
+
+.progress__bar {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--blue), var(--blue-lt));
+  transition: width var(--transition);
+}
+.progress__bar--p0   { width: 0%; }
+.progress__bar--p5   { width: 5%; }
+.progress__bar--p10  { width: 10%; }
+.progress__bar--p15  { width: 15%; }
+.progress__bar--p20  { width: 20%; }
+.progress__bar--p25  { width: 25%; }
+.progress__bar--p30  { width: 30%; }
+.progress__bar--p35  { width: 35%; }
+.progress__bar--p40  { width: 40%; }
+.progress__bar--p45  { width: 45%; }
+.progress__bar--p50  { width: 50%; }
+.progress__bar--p55  { width: 55%; }
+.progress__bar--p60  { width: 60%; }
+.progress__bar--p65  { width: 65%; }
+.progress__bar--p70  { width: 70%; }
+.progress__bar--p75  { width: 75%; }
+.progress__bar--p80  { width: 80%; }
+.progress__bar--p85  { width: 85%; }
+.progress__bar--p90  { width: 90%; }
+.progress__bar--p95  { width: 95%; }
+.progress__bar--p100 { width: 100%; }
+
+/* ── Paginación ───────────────────────────────────────────── */
+
+.paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+.paginacion__lista { display: flex; gap: .3rem; flex-wrap: wrap; }
+.paginacion__btn,
+.paginacion__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  padding: .35rem .7rem;
+  border: 1px solid var(--grey-300);
+  border-radius: var(--radius);
+  background: var(--white);
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--grey-700);
+}
+.paginacion__btn:hover,
+.paginacion__num:hover { border-color: var(--blue-lt); color: var(--blue-lt); }
+.paginacion__num.is-active {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+}
+.paginacion__puntos { color: var(--grey-500); padding: 0 .2rem; }
+
+/* ── Animación de aparición (si JS está activo) ───────────── */
+
+.js .reveal { opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
+.js .reveal.visible { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal { opacity: 1; transform: none; }
+}

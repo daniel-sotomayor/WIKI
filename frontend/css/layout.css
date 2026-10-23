@@ -1,0 +1,203 @@
+/* ============================================================
+   TELECOMWIKI — layout.css
+   Estructura global: barra institucional, cabecera, navegación
+   principal, área de contenido y pie.
+   ============================================================ */
+
+/* ── Barra institucional superior ─────────────────────────── */
+
+.bar-top {
+  background: var(--navy);
+  color: rgba(255,255,255,.70);
+  font-size: 11.5px;
+  letter-spacing: .03em;
+  padding: .45rem 0;
+  border-bottom: 2px solid var(--gold);
+}
+.bar-top__inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+.bar-top__sep { opacity: .5; }
+.bar-top__derecha { color: var(--gold-lt); }
+
+/* ── Cabecera ─────────────────────────────────────────────── */
+
+.site-header {
+  background: var(--white);
+  border-bottom: 1px solid var(--grey-300);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding-top: .85rem;
+  padding-bottom: .85rem;
+}
+
+.site-logo {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.logo-icon { display: flex; align-items: center; color: var(--blue); }
+.logo-text  { display: flex; flex-direction: column; }
+.logo-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--navy);
+  letter-spacing: -.01em;
+  line-height: 1.1;
+}
+.logo-sub {
+  font-size: 10.5px;
+  color: var(--grey-500);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+/* ── Navegación ───────────────────────────────────────────── */
+
+.site-nav { display: flex; align-items: center; gap: .2rem; flex: 1; }
+.site-nav ul { display: flex; align-items: center; gap: .15rem; }
+.site-nav a {
+  display: block;
+  font-size: .875rem;
+  font-weight: 500;
+  color: var(--grey-700);
+  padding: .42rem .8rem;
+  border-radius: var(--radius);
+  transition: background var(--transition), color var(--transition);
+}
+.site-nav a:hover { background: var(--grey-100); color: var(--navy); }
+.site-nav a.is-active { background: var(--grey-100); color: var(--blue); font-weight: 600; }
+
+/* Botón hamburguesa (móvil) */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--grey-300);
+  border-radius: var(--radius);
+  padding: .35rem .5rem;
+  color: var(--navy);
+  cursor: pointer;
+}
+
+/* ── Acciones de la cabecera ──────────────────────────────── */
+
+.site-header__actions { display: flex; align-items: center; gap: .6rem; margin-left: auto; }
+
+.user-badge {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  font-size: .8rem;
+  color: var(--grey-700);
+}
+.user-badge__nombre { font-weight: 600; color: var(--navy); }
+.user-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  flex-shrink: 0;
+}
+
+.form-salir { display: inline-flex; }
+
+/* ── Área de contenido ────────────────────────────────────── */
+
+.main-content {
+  min-height: 55vh;
+  padding: 2.25rem 0 4rem;
+}
+
+/* ── Pie ──────────────────────────────────────────────────── */
+
+.site-footer {
+  background: var(--navy);
+  color: rgba(255,255,255,.75);
+  padding: 3rem 0 0;
+  margin-top: 4rem;
+  font-size: .875rem;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 2.5rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid rgba(255,255,255,.10);
+}
+.footer-brand__nombre {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #fff;
+  margin-bottom: .5rem;
+}
+.footer-brand p {
+  color: rgba(255,255,255,.65);
+  font-size: .85rem;
+  line-height: 1.6;
+  margin-bottom: .5rem;
+}
+.footer-col h2 {
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--gold-lt);
+  margin-bottom: .9rem;
+}
+.footer-col ul li { margin-bottom: .5rem; }
+.footer-col a { color: rgba(255,255,255,.65); }
+.footer-col a:hover { color: var(--gold-lt); }
+.footer-col li { color: rgba(255,255,255,.65); font-size: .85rem; }
+
+.footer-bottom {
+  padding: 1.25rem 0;
+  text-align: center;
+  font-size: .78rem;
+  color: rgba(255,255,255,.40);
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+
+@media (max-width: 960px) {
+  .nav-toggle { display: inline-flex; }
+
+  .site-nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: none;
+    background: var(--white);
+    border-bottom: 1px solid var(--grey-300);
+    box-shadow: var(--shadow-md);
+    padding: .5rem 1.5rem 1rem;
+  }
+  .site-nav.is-open { display: block; }
+  .site-nav ul { flex-direction: column; align-items: stretch; }
+  .site-nav a { padding: .65rem .75rem; }
+
+  .site-header__inner { position: relative; gap: .75rem; }
+  .site-header__actions { gap: .4rem; }
+  .user-badge__nombre { display: none; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+  .bar-top__derecha { display: none; }
+  .logo-sub { display: none; }
+  .footer-grid { grid-template-columns: 1fr; gap: 1.75rem; }
+  .main-content { padding: 1.5rem 0 3rem; }
+}

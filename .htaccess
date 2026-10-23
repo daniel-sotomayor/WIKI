@@ -1,0 +1,32 @@
+# ============================================================
+#  TelecomWiki 3.0 — protección general de la raíz
+#  Requiere mod_rewrite, mod_headers y mod_authz_core
+#  (todos vienen habilitados por defecto en XAMPP)
+# ============================================================
+
+# Sin listado de directorios si falta un index.php en alguna carpeta
+Options -Indexes
+
+# No revelar la versión de Apache en respuestas de error
+ServerSignature Off
+
+# ── Archivos que nunca deben servirse por web ────────────────
+# esquemas SQL, documentación, respaldos, variables de entorno,
+# control de versiones y el router de desarrollo
+<FilesMatch "\.(sql|md|log|env|ini|bak|sh|swp|rar|tar|gz)$">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "^(composer\.(json|lock)|package(-lock)?\.json|\.git.*|dev-router\.php)$">
+    Require all denied
+</FilesMatch>
+
+# ── Cabeceras de seguridad de respaldo ───────────────────────
+# Las cabeceras "fuertes" (incluida la CSP con nonce) las envía
+# backend/lib/security.php en cada petición PHP. Estas son un
+# respaldo para los estáticos que sirve directamente Apache.
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

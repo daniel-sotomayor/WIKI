@@ -1,0 +1,173 @@
+# TelecomWiki — Historial de desarrollo
+
+Registro de lo que se hizo al reconstruir el sistema, para revisión del
+tutor y para que cualquiera pueda retomar el trabajo. La documentación de
+*uso* está en [`LEEME.md`](LEEME.md) y la de *seguridad* en
+[`SEGURIDAD.md`](SEGURIDAD.md).
+
+Código fuente de referencia (sin tocar): `telecom_wiki_postgresql2.0/`.
+Código nuevo: `telecom_wiki/`.
+
+---
+
+## Decisiones tomadas con el cliente
+
+| Tema | Decisión |
+|---|---|
+| Estructura | Reescritura profunda con una capa de helpers (`backend/lib/`), no parches sobre el original |
+| Base de datos | Se revirtió el port a PostgreSQL: se vuelve a **MySQL/MariaDB** |
+| Archivos subidos | En el servidor, en `backend/storage/uploads/` (fuera del alcance web) |
+| Editor | `<textarea>` + barra de herramientas propia en JS puro + saneado en el servidor |
+| URLs | Planas con parámetros (`.php?slug=`), sin `mod_rewrite` |
+| Carpeta | Todo en `telecom_wiki/`, dejando el original intacto |
+| Dependencias | Ninguna de frontend; en backend sólo PHPMailer (ya vendorizado) |
+
+---
+
+## Fases
+
+### Fase 0 — Estructura y seguridad base
+Árbol de carpetas, `.htaccess` en raíz/`backend/`/`partials/`/`storage/`,
+`index.php` que redirige al frontend, `dev-router.php` para el servidor de
+desarrollo, `database.sql` (12 tablas + datos de ejemplo) y el núcleo:
+`config.php`, `db.php`, `security.php` (CSP con nonce, sesión endurecida,
+bitácora), `auth.php` (login con límite de intentos, CSRF, flash),
+`permisos.php`, `helpers.php`, `validate.php`, `paginate.php`,
+`sanitize.php`, `render.php`, `upload.php`, `tags.php`, `mailer.php`.
+
+### Fase 1 — Núcleo
+`bootstrap.php` con `abrirPagina()` / `cerrarPagina()` (las variables de
+presentación se leen con `global`: un include dentro de una función no ve
+el ámbito global de la pantalla).
+
+### Fase 3 — Pantallas públicas
+Portada, proyectos, proyecto, wiki, artículo, noticias, noticia, «quiénes
+somos» (con formulario de contacto: honeypot + límite de envíos),
+`login.php`, `logout.php` (POST + CSRF), `media.php` (validación de
+nombre/MIME y soporte de `Range` para vídeo), crear noticia y moderar
+noticias.
+
+### Fase 4 — Panel de administración
+Nueve pantallas: resumen, usuarios, formulario de usuario, proyecto,
+hito, artículo, historial de versiones, noticia y mensajes de contacto.
+Todas con `requierePermiso()` por **capacidad**, no por lista de roles.
+
+### Fase 5 — Utilidades
+`plantillas_articulos.php` (plantillas de contenido por tipo de artículo)
+y `tags.php` (etiquetas normalizadas, sin duplicados).
+
+### Fase 6 — Interfaz (CSS/JS)
+Cinco hojas de estilo en vez de un monolito:
+
+| Archivo | Contenido |
+|---|---|
+| `base.css` | variables, reset, tipografía, alertas, badges, rejillas, utilidades |
+| `layout.css` | barra institucional, cabecera, navegación (incluye el menú móvil), pie |
+| `components.css` | botones, formularios, tablas, tarjetas, paneles, galerías, editor |
+| `pages.css` | portada, listados, fichas, detalle de contenido, «quiénes somos», acceso |
+| `admin.css` | resumen, colas de moderación, hitos, versiones, bitácora |
+
+JavaScript sin librerías: `main.js` (menú móvil, aparición en scroll,
+confirmaciones `data-confirm-submit`, alertas que se cierran solas),
+`editor.js` (barra de herramientas que sólo inserta etiquetas permitidas)
+y `articulo_form.js` (guía de plantillas).
+
+> La CSP no permite `unsafe-inline`, por lo que **no existen** handlers ni
+> estilos en línea: los datos para JS viajan en `<input type="hidden">`
+> y las clases de color/medida se usan en lugar de `style="…"`.
+
+### Fase 7 — Documentación y verificación
+- `docs/LEEME.md`, `docs/SEGURIDAD.md` y este archivo.
+- Corredor de pruebas propio sin dependencias: `backend/tests/run.php`.
+- `favicon.svg` propio (no había estáticos en el proyecto original).
+
+### Fase 8 — PHP moderno, XAMPP y cuentas (2026-10-23)
+- **PHP 8.4.27** instalado y verificado sobre el proyecto (la suite
+  corre igual en 8.3 y 8.4); `composer.json` ahora declara
+  `"php": ">=8.1"` y `platform.php = 8.1.0`.
+- **`frontend/cuenta.php`** — «Mi cuenta»: cualquier rol edita sus
+  datos y cambia su contraseña (pide la actual, fuerza fortaleza,
+  regenera el ID de sesión y lo registra en la bitácora).
+- **`frontend/admin/sistema.php`** — diagnóstico del entorno: versión
+  de PHP, las 7 extensiones, límites de subida del `php.ini`, permisos
+  de `backend/storage/uploads`, conexión y carga de la base, `.htaccess`
+  y vendor. Se abre desde el panel y sirve para validar una instalación
+  nueva en XAMPP en 30 segundos.
+- **Subidas en proyectos**: `proyecto_form.php` ahora admite adjuntos
+  (igual que noticias y artículos) con galería y borrado.
+- **Bug corregido**: `subirAdjuntos()` rompía con **un solo archivo**
+  (el navegador envía escalares, no arrays, y el código lea `[0]` como
+  offset de cadena → «No se seleccionó ningún archivo»). Ahora
+  `normalizarFiles()` unifica ambos casos.
+- `docs/LEEME.md`: requisitos PHP 8.1–8.4, `php.ini` sugerido para
+  XAMPP y nota de «Mi cuenta».
+
+---
+
+## Bugs del código original detectados y corregidos
+
+| Problema original | Corrección |
+|---|---|
+| `INSERT` de proyectos sin campo `slug` (los enlaces salían rotos) | se genera con `slugify()` en alta y edición |
+| `contarAdminsActivos()` declarada en dos archivos (fatal: *Cannot redeclare*) | una única versión en `auth.php` |
+| Imágenes enlazadas con rutas abreviadas `~` que no existen en el servidor | helpers `url()` y `urlMedia()` |
+| `logout` por GET sin token (un `<img>` podía cerrar sesiones) | `logout.php` por POST con CSRF |
+| Borrados/ediciones sin validar el ID recibido | `WHERE id = ?` acotado a la entidad y al registro actual |
+| HTML de artículos/noticias impreso tal cual (**XSS almacenado**) | `sanearHTML()` al guardar y al mostrar, lista blanca de etiquetas |
+| Listados sin `LIMIT` (escaneo completo, respuesta sin fin) | `paginar()` + `htmlPaginacion()` en todas las vistas |
+| Consultas concatenadas | PDO con *prepared statements* y `ATTR_EMULATE_PREPARES => false` |
+| Hash de la contraseña de `admin` en `database.sql` que no validaba ninguna clave | regenerado con `password_hash('Admin2026!')` y verificado con `password_verify()` |
+
+---
+
+## Verificación (2026-10-23)
+
+Con PHP 8.4.27 y la base ya importada:
+
+- `php backend/tests/run.php` → 2 suites, **70 pruebas, 0 fallas**
+  (48 archivos PHP, sin estilos/handlers en línea, todas las clases CSS
+  existen).
+- «Mi cuenta»: cambio de contraseña con la actual incorrecta → error;
+  con la correcta → 302, login con la clave nueva, restauración y
+  `password_verify()` OK; la bitácora registra `password_cambiada`.
+- Subidas en proyectos: PNG subido → fila en `media`, archivo con
+  nombre aleatorio en `backend/storage/uploads/imagen/`, visible en la
+  ficha pública y servido por `media.php` como `image/png`; un `.php`
+  se rechaza con «Tipo de archivo no permitido»; el borrado del adjunto
+  y del proyecto limpian disco y base.
+- `admin/sistema.php` → 200 con todas las comprobaciones en verde.
+
+## Verificación final (2026-10-13)
+
+Con las extensiones de PHP y MariaDB instaladas en la máquina de
+desarrollo se corrió todo el ciclo:
+
+- Base importada (`database.sql`): 12 tablas y 4 usuarios; las cuatro
+  contraseñas validan con `password_verify()`.
+- `php backend/tests/run.php` → 2 suites, **70 pruebas, 0 fallas**, ya
+  por la ruta `DOMDocument` del saneador.
+- Recorrido con `./dev-server.sh`: portada, wiki, proyectos, noticias,
+  ficha de proyecto, artículo, noticia, quiénes somos y acceso → **200**;
+  `admin/` y `admin/seguridad.php` redirigen a login sin sesión.
+- Flujo completo con sesión de `admin`: alta de noticia (302 y `slug`
+  generado), guardado con `<script>`, `onerror` y `javascript:` en el
+  HTML → **eliminados** en la base y en la vista pública; publicación,
+  `POST` sin token CSRF → **403**; `logout` por POST; bitácora con
+  `login_exitoso`, `noticia_creada`, `csrf_invalido` y `logout`.
+
+Queda pendiente sólo la prueba de **subida de archivos** (imágenes,
+vídeo y documentos) contra `media.php`, que requiere un caso de uso
+real, y el envío de correo por SMTP con credenciales propias.
+
+## Nota del entorno
+
+Se agregaron **PHP 8.4.27** (repositorio ondrej/php, junto al 8.3 del
+sistema) y **MariaDB 10.11** para validar el proyecto con la última
+versión estable de PHP disponible para Ubuntu 24.04. También se reparó
+el repositorio de AnyDesk (`apt` fallaba por la clave GPG faltante).
+
+
+El paquete `virtualbox-ext-pack` de esta máquina falla al configurarse
+con `dpkg` (post-instalación rota, preexistente e **ajena al proyecto**);
+no afecta a PHP ni a MariaDB.
+

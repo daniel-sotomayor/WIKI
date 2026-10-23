@@ -1,0 +1,3 @@
+# Los archivos subidos nunca se sirven directamente:
+# el único camino es frontend/media.php, que valida contra la BD.
+Require all denied
