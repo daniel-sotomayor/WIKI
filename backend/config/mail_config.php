@@ -25,6 +25,13 @@ define('SMTP_SECURE', getenv('SMTP_SECURE') ?: 'tls');   // 'tls' o 'ssl'
 define('SMTP_USER',   getenv('SMTP_USER') ?: 'correo@ejemplo.com');
 define('SMTP_PASS',   getenv('SMTP_PASS') ?: '');        // contraseña de aplicación — SOLO por variable de entorno
 
+// Transporte de correo:
+//   'smtp'    → envía por el servidor SMTP (necesita SMTP_PASS)
+//   'archivo' → guarda cada correo en backend/storage/mail/*.eml
+//               (ideal en XAMPP local y en las pruebas automatizadas)
+// Si no se define nada, se elige 'archivo' cuando no hay contraseña.
+define('MAIL_TRANSPORT', getenv('MAIL_TRANSPORT') ?: (SMTP_PASS !== '' ? 'smtp' : 'archivo'));
+
 define('CONTACT_FROM_EMAIL', SMTP_USER);
 define('CONTACT_FROM_NAME',  'TelecomWiki');
 

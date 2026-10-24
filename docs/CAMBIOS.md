@@ -167,7 +167,48 @@ versión estable de PHP disponible para Ubuntu 24.04. También se reparó
 el repositorio de AnyDesk (`apt` fallaba por la clave GPG faltante).
 
 
-El paquete `virtualbox-ext-pack` de esta máquina falla al configurarse
-con `dpkg` (post-instalación rota, preexistente e **ajena al proyecto**);
-no afecta a PHP ni a MariaDB.
+El paquete `virtualbox-ext-pack` de esta máquina fallaba al configurarse
+con `dpkg` (post-instalación rota, preexistente y ajena al proyecto);
+se reparó instalando la extensión 7.2.14 desde un mirror y quedó en
+estado `ii`, sin paquetes rotos en `dpkg`.
 
+
+## Fase 9 — Pruebas funcionales y documentación completa (2026-10-24)
+
+- **Suite HTTP end-to-end** (`backend/tests/http_test.php`): levanta
+  `php -S` con `dev-router.php` y recorre con curl las públicas, el
+  panel, login (correcto e incorrecto), CSRF 403, creación de noticia
+  con HTML saneado, subida de imagen (fila `media` + archivo en disco),
+  rechazo de `.php`, entrega por `media.php`, logout y mantenimiento
+  503 con restauración. Limpia BD y disco al finalizar; se omite con
+  OK si no hay curl o base de datos.
+- **Suite de correo** (`correo_test.php`): con `MAIL_TRANSPORT=archivo`
+  valida que cada `.eml` tenga cabeceras RFC 5322, que el contacto y la
+  confirmación se generen (el asunto viaja codificado RFC 2047) y
+  borra los archivos de prueba.
+- Correcciones halladas por las pruebas:
+  - `http_test.php`: curl no admite mezclar `-d`/`--data-urlencode`
+    con `-F` (salía `exit 2`); con archivos todo va en multipart.
+  - `estructura_test.php`: un literal `?>` dentro de un comentario
+    `//` cerraba el modo PHP y volcaba el archivo a la salida (el test
+    "pasaba" sin ejecutarse). Reescrito el comentario.
+  - La verificación del login inválido se hacía en un GET posterior;
+    el mensaje vive en la respuesta del POST (200).
+- `frontend/css/pages.css`: reglas para `.pagina-mantenimiento`
+  (503 del gate de mantenimiento en `bootstrap.php`).
+- **Documentación completa** en `docs/`: `ARQUITECTURA.md` (capas,
+  flujo de petición, módulos, decisiones), `DISENO.md` (tokens,
+  componentes, responsive, accesibilidad), `MODELO-DE-DATOS.md`
+  (tabla por tabla, vistas, cascadas), `CODIGO.md` (catálogo de los
+  ~90 helpers de `backend/lib/`), `PRUEBAS.md` (cómo correr y
+  escribir suites) y `OPERACION.md` (XAMPP, respaldos, migraciones,
+  correo, mantenimiento). `LEEME.md` ya las enlaza.
+
+## Verificación final (2026-10-24)
+
+- `php backend/tests/run.php` → **4 suites, 0 fallas**: correo,
+  estructura (52 archivos PHP: sintaxis, CSP, clases CSS, accesibilidad,
+  CSRF, enlaces), recorrido HTTP (17 comprobaciones) y saneamiento
+  (70 pruebas DOM).
+- Recorrido manual con `./dev-server.sh`: todas las pantallas en 200
+  sin avisos PHP 8.4.

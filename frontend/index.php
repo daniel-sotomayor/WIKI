@@ -86,19 +86,19 @@ abrirPagina();
 
         <div class="hero-stats">
             <div class="hero-stat">
-                <span class="hero-stat__num" data-count="<?= $numProyectos ?>">0</span>
+                <span class="hero-stat__num" data-count="<?= $numProyectos ?>"><?= $numProyectos ?></span>
                 <span class="hero-stat__label">Proyectos registrados</span>
             </div>
             <div class="hero-stat">
-                <span class="hero-stat__num" data-count="<?= $numArticulos ?>">0</span>
+                <span class="hero-stat__num" data-count="<?= $numArticulos ?>"><?= $numArticulos ?></span>
                 <span class="hero-stat__label">Artículos publicados</span>
             </div>
             <div class="hero-stat">
-                <span class="hero-stat__num" data-count="<?= $numNoticias ?>">0</span>
+                <span class="hero-stat__num" data-count="<?= $numNoticias ?>"><?= $numNoticias ?></span>
                 <span class="hero-stat__label">Noticias</span>
             </div>
             <div class="hero-stat">
-                <span class="hero-stat__num" data-count="<?= $numUsuarios ?>">0</span>
+                <span class="hero-stat__num" data-count="<?= $numUsuarios ?>"><?= $numUsuarios ?></span>
                 <span class="hero-stat__label">Usuarios activos</span>
             </div>
         </div>

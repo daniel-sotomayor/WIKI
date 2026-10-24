@@ -1,0 +1,30 @@
+# Dependencias instaladas localmente
+**/node_modules/
+
+# Configuración local y variables de entorno
+.env
+.env.*
+!.env.example
+
+# Archivos cargados por usuarios
+/backend/storage/uploads/*
+!/backend/storage/uploads/.gitkeep
+
+# Temporales, logs y archivos del sistema
+*.log
+*.tmp
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Artefactos de ejecución (correo por archivo y respaldos)
+/backend/storage/mail/*
+!/backend/storage/mail/.gitkeep
+/backend/storage/respaldos/*
+!/backend/storage/respaldos/.gitkeep
+
+# Basura de npm/pnpm (el JS es vanilla, sin dependencias)
+frontend/js/package.json
+frontend/js/pnpm-lock.yaml
+frontend/js/node_modules/

@@ -49,7 +49,7 @@ $cssExtra   = $cssExtra ?? '';
     <meta name="theme-color" content="#0B1F3A">
     <title><?= e($pageTitle ?? SITE_NAME) ?> · <?= e(SITE_NAME) ?></title>
 
-    <link rel="icon" href="<?= e(url('assets/img/favicon.svg')) ?>" type="image/svg+xml">
+    <link rel="icon" href="<?= e(url('assets/img/favicon.png')) ?>" type="image/png">
     <link rel="stylesheet" href="<?= e(url('css/base.css')) ?>">
     <link rel="stylesheet" href="<?= e(url('css/layout.css')) ?>">
     <link rel="stylesheet" href="<?= e(url('css/components.css')) ?>">

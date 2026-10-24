@@ -10,8 +10,44 @@
 // ============================================================
 
 require_once dirname(__DIR__, 2) . '/backend/lib/bootstrap.php';
+require_once BACKEND . '/lib/mailer.php';   // MAIL_TRANSPORT, enviarCorreoContacto()
 
 requierePermiso('panel.acceder');
+
+$yo  = currentUser();
+$esAdmin = nivelRol($yo['rol']) >= 4;
+
+// ── Acciones (todas con CSRF) ───────────────────────────────
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verifyCsrf();
+    $accion = (string) ($_POST['accion'] ?? '');
+
+    // Modo mantenimiento — sólo administrador
+    if ($accion === 'mantenimiento') {
+        requierePermiso('usuario.gestionar');
+        $nuevo = modoMantenimiento() ? '0' : '1';
+        configGuardar('mantenimiento', $nuevo);
+        logSeguridad($nuevo === '1' ? 'mantenimiento_activado' : 'mantenimiento_desactivado',
+            (string) $yo['id'], null);
+        redirigir('admin/sistema.php', 'success',
+            $nuevo === '1'
+                ? 'Modo mantenimiento activado: el público ya no ve el sitio.'
+                : 'Modo mantenimiento desactivado: el sitio vuelve a ser público.');
+    }
+
+    // Correo de prueba — escribe un .eml (transporte archivo) o envía por SMTP
+    if ($accion === 'correo_prueba') {
+        $ok = enviarCorreoContacto('Prueba de envío — TelecomWiki',
+            'prueba@telecom.gob.ve',
+            'Correo de prueba generado desde Panel → Diagnóstico del sistema.');
+        logSeguridad('correo_prueba', (string) $yo['id'], $ok ? 'enviado' : 'falló');
+        redirigir('admin/sistema.php', $ok ? 'success' : 'danger',
+            $ok
+                ? 'Correo de prueba generado. Con el transporte por archivo queda en '
+                  . 'backend/storage/mail/ (último: ' . basename((string) ultimoCorreoArchivo()) . ').'
+                : 'No se pudo generar el correo de prueba; revisá el log del servidor.');
+    }
+}
 
 // ── Recopilación de comprobaciones ──────────────────────────
 $chequeos = [];
@@ -130,7 +166,18 @@ $agregar('Configuración', 'PHPMailer (vendor)', $vendorOk,
     !$vendorOk);
 
 $agregar('Configuración', 'Correo saliente (SMTP)', true,
-    'Configurado en backend/config/mail_config.php; se prueba el envío desde «Quiénes somos».');
+    MAIL_TRANSPORT === 'archivo'
+        ? 'Transporte por ARCHIVO: cada correo queda en backend/storage/mail/ '
+          . '(no hace falta servidor SMTP en desarrollo).'
+        : 'Transporte SMTP hacia ' . SMTP_HOST . ':' . SMTP_PORT . '.',
+    MAIL_TRANSPORT !== 'archivo');
+
+$mantenimiento = modoMantenimiento();
+$agregar('Configuración', 'Modo mantenimiento', !$mantenimiento,
+    $mantenimiento
+        ? 'ACTIVO: el público ve un aviso 503 y sólo entra el personal con sesión.'
+        : 'Desactivado: el sitio es público.',
+    $mantenimiento);
 
 // Resumen
 $total    = 0;
@@ -210,6 +257,44 @@ abrirPagina();
         </ul>
     </section>
     <?php endforeach; ?>
+
+    <section class="panel">
+        <header class="panel__cabecera">
+            <h2 class="panel__titulo">Acciones de mantenimiento</h2>
+        </header>
+
+        <form method="post" class="formulario" action="<?= e(url('admin/sistema.php')) ?>">
+            <?= campoCSRF() ?>
+            <input type="hidden" name="accion" value="correo_prueba">
+            <p class="muted">Genera un correo al departamento
+                (<?= e(CONTACT_TO_EMAIL) ?>) usando el transporte
+                <strong><?= e(MAIL_TRANSPORT) ?></strong>.</p>
+            <div class="acciones-formulario">
+                <button class="btn btn-outline" type="submit">
+                    <?= icono('mail', 15) ?> Enviar correo de prueba
+                </button>
+            </div>
+        </form>
+
+        <?php if ($esAdmin): ?>
+        <hr>
+        <form method="post" class="formulario" action="<?= e(url('admin/sistema.php')) ?>"
+              data-confirm-submit="<?= $mantenimiento
+                  ? '¿Desactivar el modo mantenimiento y volver a publicar el sitio?'
+                  : '¿Activar el modo mantenimiento? El público verá un aviso y sólo entrarán los usuarios con sesión.' ?>">
+            <?= campoCSRF() ?>
+            <input type="hidden" name="accion" value="mantenimiento">
+            <p class="muted">Con el mantenimiento activo, el público ve una página de
+                aviso (HTTP 503) y sólo el personal con sesión puede entrar.</p>
+            <div class="acciones-formulario">
+                <button class="btn <?= $mantenimiento ? 'btn-primary' : 'btn-danger' ?>" type="submit">
+                    <?= icono('shield', 15) ?>
+                    <?= $mantenimiento ? 'Desactivar mantenimiento' : 'Activar mantenimiento' ?>
+                </button>
+            </div>
+        </form>
+        <?php endif; ?>
+    </section>
 
     <p class="muted">Si algo cambia en el servidor (versión de PHP, permisos, base de datos),
         volvé a abrir esta página: se recalcula en cada petición.</p>

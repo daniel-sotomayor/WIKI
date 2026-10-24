@@ -17,6 +17,12 @@
     var nav = document.getElementById('nav-principal');
 
     if (toggle && nav) {
+      function cerrarMenu() {
+        nav.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Abrir menú de navegación');
+      }
+
       toggle.addEventListener('click', function () {
         var abierto = nav.classList.toggle('is-open');
         toggle.setAttribute('aria-expanded', abierto ? 'true' : 'false');
@@ -24,18 +30,71 @@
                                                   : 'Abrir menú de navegación');
       });
 
-      // Al salir del foco del menú con Escape se cierra
-      nav.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
-          nav.classList.remove('is-open');
-          toggle.setAttribute('aria-expanded', 'false');
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && nav.classList.contains('is-open')) {
+          cerrarMenu();
           toggle.focus();
         }
       });
+
+      document.addEventListener('click', function (e) {
+        if (nav.classList.contains('is-open')
+            && !nav.contains(e.target)
+            && !toggle.contains(e.target)) {
+          cerrarMenu();
+        }
+      });
+
+      nav.querySelectorAll('a').forEach(function (enlace) {
+        enlace.addEventListener('click', cerrarMenu);
+      });
+
+      var breakpoint = window.matchMedia('(min-width: 961px)');
+      var alCambiarBreakpoint = function (e) {
+        if (e.matches) cerrarMenu();
+      };
+
+      if (breakpoint.addEventListener) {
+        breakpoint.addEventListener('change', alCambiarBreakpoint);
+      } else if (breakpoint.addListener) {
+        breakpoint.addListener(alCambiarBreakpoint);
+      }
     }
 
     // ── Animación de aparición al hacer scroll ─────────────
-    var elementos = document.querySelectorAll('.reveal');
+    var selectoresReveal = [
+      '#contenido .page-head',
+      '#contenido .seccion-cabecera',
+      '#contenido .section-header',
+      '#contenido .hero__inner',
+      '#contenido .hero-institucional',
+      '#contenido .grid > *',
+      '#contenido .rejilla > *',
+      '#contenido .lista-versiones > *',
+      '#contenido .lista-moderacion > *',
+      '#contenido .lista-hitos > *',
+      '#contenido .lista-mensajes > *',
+      '#contenido .lista-roles > *',
+      '#contenido .panel'
+    ];
+    var elementos = document.querySelectorAll(selectoresReveal.join(','));
+
+    document.querySelectorAll(
+      '#contenido .grid, #contenido .rejilla, #contenido .lista-versiones, ' +
+      '#contenido .lista-moderacion, #contenido .lista-hitos, #contenido .lista-mensajes, ' +
+      '#contenido .lista-roles'
+    ).forEach(function (grupo) {
+      Array.from(grupo.children).forEach(function (el, indice) {
+        el.classList.add('reveal', 'reveal--delay-' + (indice % 4 + 1));
+      });
+    });
+
+    document.querySelectorAll(
+      '#contenido .page-head, #contenido .seccion-cabecera, #contenido .section-header, ' +
+      '#contenido .hero__inner, #contenido .hero-institucional, #contenido .panel'
+    ).forEach(function (el) {
+      el.classList.add('reveal');
+    });
 
     if (elementos.length && 'IntersectionObserver' in window) {
       var observador = new IntersectionObserver(function (entradas) {
@@ -50,6 +109,44 @@
       elementos.forEach(function (el) { observador.observe(el); });
     } else {
       elementos.forEach(function (el) { el.classList.add('visible'); });
+    }
+
+    // ── Contadores de la portada ──────────────────────────
+    var contadores = document.querySelectorAll('[data-count]');
+
+    if (contadores.length && 'IntersectionObserver' in window
+        && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      var observadorContadores = new IntersectionObserver(function (entradas) {
+        entradas.forEach(function (entrada) {
+          if (!entrada.isIntersecting) return;
+
+          var elemento = entrada.target;
+          var destino = Number(elemento.dataset.count);
+          observadorContadores.unobserve(elemento);
+
+          if (!Number.isFinite(destino) || destino <= 0) {
+            elemento.textContent = String(Number.isFinite(destino) ? destino : 0);
+            return;
+          }
+
+          var inicio = performance.now();
+          elemento.textContent = '0';
+
+          function actualizarContador(ahora) {
+            var avance = Math.min((ahora - inicio) / 900, 1);
+            var suavizado = 1 - Math.pow(1 - avance, 3);
+            elemento.textContent = String(Math.round(destino * suavizado));
+
+            if (avance < 1) window.requestAnimationFrame(actualizarContador);
+          }
+
+          window.requestAnimationFrame(actualizarContador);
+        });
+      }, { threshold: 0.5 });
+
+      contadores.forEach(function (elemento) {
+        observadorContadores.observe(elemento);
+      });
     }
 
     // ── Alertas que se cierran solas ───────────────────────

@@ -39,19 +39,13 @@ $anio = date('Y');
             <h2 id="foot-inst">Institución</h2>
             <ul>
                 <li><a href="<?= e(url('acerca.php')) ?>">Quiénes somos</a></li>
-                <li><a href="https://www.mincyt.gob.ve" target="_blank" rel="noopener noreferrer">MINCYT</a></li>
+                <li><a href="https://mincyt.gob.ve/" target="_blank" rel="noopener noreferrer">MINCYT</a></li>
                 <li><a href="https://telecom.gob.ve" target="_blank" rel="noopener noreferrer">Telecom Venezuela</a></li>
             </ul>
         </nav>
 
         <div class="footer-col">
-            <h2>Tecnología</h2>
-            <ul>
-                <li>PHP <?= e(PHP_VERSION) ?></li>
-                <li>MySQL / MariaDB</li>
-                <li>HTML5 · CSS3 · JavaScript</li>
-                <li>Software libre</li>
-            </ul>
+            
         </div>
 
     </div>

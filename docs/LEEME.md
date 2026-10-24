@@ -26,7 +26,23 @@ Stack: **PHP 8.1+ · MySQL/MariaDB · HTML5 · CSS3 · JavaScript puro**
 (sin frameworks, sin librerías de frontend; PHPMailer viene incluido en
 `backend/vendor/`).
 
+### Documentación del proyecto
+
+| Documento | Contenido |
+|---|---|
+| [`LEEME.md`](LEEME.md) | Este manual: instalación, uso y solución de problemas |
+| [`ARQUITECTURA.md`](ARQUITECTURA.md) | Capas, flujo de una petición, módulos y decisiones de diseño |
+| [`DISENO.md`](DISENO.md) | Sistema de diseño: tokens, componentes, responsive y accesibilidad |
+| [`MODELO-DE-DATOS.md`](MODELO-DE-DATOS.md) | Tabla por tabla, claves, relaciones e índices |
+| [`DIAGRAMAS.md`](DIAGRAMAS.md) | Entidad-relación, casos de uso, procesos, secuencia y estados (Mermaid; SVG listos en `docs/diagramas/`) |
+| [`CODIGO.md`](CODIGO.md) | Catálogo de funciones de la capa de helpers |
+| [`PRUEBAS.md`](PRUEBAS.md) | Cómo correr y escribir pruebas |
+| [`OPERACION.md`](OPERACION.md) | Despliegue, respaldos, migraciones y correo |
+| [`SEGURIDAD.md`](SEGURIDAD.md) | Modelo de amenazas y medidas aplicadas |
+| [`CAMBIOS.md`](CAMBIOS.md) | Historial de desarrollo y verificaciones |
+
 ---
+
 
 ## 2. Requisitos
 

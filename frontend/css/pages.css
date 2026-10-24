@@ -21,8 +21,32 @@
   inset: 0;
   background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
   pointer-events: none;
+  animation: hero-patron-flotante 36s ease-in-out infinite alternate;
 }
-.hero__inner { position: relative; max-width: 700px; }
+.hero::after {
+  content: '';
+  position: absolute;
+  width: clamp(18rem, 42vw, 38rem);
+  aspect-ratio: 1;
+  top: -45%;
+  right: -12%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(37,99,235,.32), rgba(37,99,235,0) 68%);
+  pointer-events: none;
+  animation: hero-resplandor-flotante 20s ease-in-out infinite alternate;
+}
+.hero__inner { position: relative; z-index: 1; max-width: 700px; }
+
+@keyframes hero-patron-flotante {
+  from { background-position: 0 0; }
+  to { background-position: 60px 40px; }
+}
+
+@keyframes hero-resplandor-flotante {
+  from { transform: translate3d(0, 0, 0) scale(.94); opacity: .65; }
+  to { transform: translate3d(-2rem, 1.5rem, 0) scale(1.06); opacity: 1; }
+}
+
 .hero__eyebrow {
   display: inline-flex;
   align-items: center;
@@ -65,6 +89,7 @@
   color: var(--gold-lt);
   display: block;
   line-height: 1.2;
+  font-variant-numeric: tabular-nums;
 }
 .hero-stat__label {
   font-size: .78rem;
@@ -269,6 +294,18 @@
   position: relative;
   overflow: hidden;
 }
+.hero-institucional::before {
+  content: '';
+  position: absolute;
+  left: -7rem;
+  bottom: -12rem;
+  width: clamp(20rem, 48vw, 38rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(37,99,235,.3), rgba(37,99,235,0) 70%);
+  pointer-events: none;
+  animation: acerca-resplandor-flotante 22s ease-in-out infinite alternate;
+}
 .hero-institucional::after {
   content: '';
   position: absolute;
@@ -277,7 +314,27 @@
   border: 3px solid rgba(255,255,255,.10);
   border-radius: 50%;
   pointer-events: none;
+  animation: acerca-orbita-sutil 28s ease-in-out infinite alternate;
 }
+.hero-institucional > * { position: relative; z-index: 1; }
+
+@keyframes acerca-resplandor-flotante {
+  from { transform: translate3d(0, 0, 0) scale(.96); opacity: .55; }
+  to { transform: translate3d(2rem, -1rem, 0) scale(1.08); opacity: .9; }
+}
+
+@keyframes acerca-orbita-sutil {
+  from { transform: translate3d(0, 0, 0) rotate(0deg) scale(.96); }
+  to { transform: translate3d(-1rem, 1rem, 0) rotate(18deg) scale(1.04); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero::before,
+  .hero::after,
+  .hero-institucional::before,
+  .hero-institucional::after { animation: none; }
+}
+
 .hero-institucional__eyebrow {
   display: inline-block;
   font-size: .7rem;
@@ -379,3 +436,18 @@
 /* Barra de filtros compacta (buscador de la wiki) */
 .filtros--wiki { padding: .85rem 1rem; margin-bottom: 1.25rem; }
 .filtros--wiki .filtros__campo--grande { min-width: 260px; }
+
+/* ── Página de mantenimiento (bootstrap.php) ──────────────── */
+/* Se sirve sin el layout normal, sólo con base/layout/pages. */
+.pagina-mantenimiento {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+  background: var(--bg, #f4f6fb);
+  text-align: center;
+}
+.pagina-mantenimiento main { max-width: 34rem; padding: 2rem; }
+.pagina-mantenimiento h1 { margin-bottom: .75rem; }
+.pagina-mantenimiento p { color: var(--text-muted, #5a6478); line-height: 1.7; }

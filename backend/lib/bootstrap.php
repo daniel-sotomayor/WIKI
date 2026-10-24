@@ -30,6 +30,37 @@ require_once __DIR__ . '/sanitize.php';        // limpieza de HTML
 require_once __DIR__ . '/render.php';          // tarjetas, campos, miga de pan
 require_once __DIR__ . '/upload.php';          // multimedia
 require_once __DIR__ . '/tags.php';            // etiquetas de artículos
+require_once __DIR__ . '/config_sitio.php';    // ajustes en BD (mantenimiento…)
+
+// ── Modo mantenimiento ──────────────────────────────────────
+// Si está activo (Panel → Diagnóstico), el público ve un aviso 503
+// y sólo entran los usuarios con sesión. El acceso, el cierre de
+// sesión y la entrega de archivos siguen habilitados.
+if (modoMantenimiento() && !isLoggedIn()) {
+    $rutaActual = basename((string) ($_SERVER['SCRIPT_NAME'] ?? ''));
+    $permitidas = ['login.php', 'logout.php', 'media.php'];
+
+    if (!in_array($rutaActual, $permitidas, true)) {
+        http_response_code(503);
+        header('Retry-After: 300');
+        header('Content-Type: text/html; charset=utf-8');
+        $sitio = e(SITE_NAME);
+        echo '<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">'
+           . '<meta name="viewport" content="width=device-width, initial-scale=1">'
+           . '<title>Sitio en mantenimiento · ' . $sitio . '</title>'
+           . '<link rel="stylesheet" href="' . e(url('css/base.css')) . '">'
+           . '<link rel="stylesheet" href="' . e(url('css/layout.css')) . '">'
+           . '<link rel="stylesheet" href="' . e(url('css/pages.css')) . '">'
+           . '</head><body class="pagina-mantenimiento"><main class="container">'
+           . '<h1>Sitio en mantenimiento</h1>'
+           . '<p>Estamos realizando tareas de mantenimiento de '
+           . '<strong>' . $sitio . '</strong>. Volvé a intentar en unos minutos.</p>'
+           . '<p><a class="btn btn-primary" href="' . e(url('login.php')) . '">'
+           . 'Iniciar sesión (personal autorizado)</a></p>'
+           . '</main></body></html>';
+        exit;
+    }
+}
 
 /**
  * Cabecera estándar de toda pantalla.

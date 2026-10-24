@@ -17,7 +17,6 @@ extensión *Mermaid Preview* de VS Code o pegándolos en <https://mermaid.live>.
 erDiagram
     usuarios ||--o{ proyectos : "es responsable de"
     categorias ||--o{ proyectos : "agrupa"
-    usuarios |o--o{ proyectos : "los crea"          "nullable"
     proyectos ||--o{ articulos : "documenta"
     usuarios |o--o{ articulos : "es autor de"
     articulos ||--o{ historial_versiones : "versiona"
@@ -32,129 +31,129 @@ erDiagram
     articulos ||--o{ media : "adjunta polimorfico"
     noticias ||--o{ media : "adjunta polimorfico"
     usuarios {
-        int id PK
-        varchar_100 nombre
-        varchar_100 apellido
-        varchar_50 usuario UK
-        varchar_150 email UK
-        varchar_255 password "bcrypt"
-        varchar_20 rol "lector|editor|supervisor|admin"
-        tinyint activo
+        int id PK "auto increment"
+        varchar nombre "max 100"
+        varchar apellido "max 100"
+        varchar usuario UK "max 50, login"
+        varchar email UK "max 150"
+        varchar password "hash bcrypt"
+        varchar rol "lector/editor/supervisor/admin"
+        tinyint activo "0 o 1"
         datetime ultimo_acceso
         datetime creado_en
     }
     categorias {
-        int id PK
-        varchar_100 nombre
-        varchar_120 slug UK
+        int id PK "auto increment"
+        varchar nombre "max 100"
+        varchar slug UK "max 120"
         text descripcion
-        varchar_50 icono
+        varchar icono "nombre del icono SVG"
     }
     proyectos {
-        int id PK
-        varchar_200 titulo
-        varchar_220 slug UK
-        int categoria_id FK
-        varchar_500 descripcion_corta
-        longtext descripcion
-        varchar_300 tecnologias
-        varchar_20 version_actual
-        varchar_20 estado "activo|en_desarrollo|pausado|archivado"
-        int responsable_id FK "nullable"
+        int id PK "auto increment"
+        varchar titulo "max 200"
+        varchar slug UK "max 220, URL amigable"
+        int categoria_id FK "a categorias.id"
+        varchar descripcion_corta "max 500"
+        longtext descripcion "HTML saneado"
+        varchar tecnologias "lista separada por comas"
+        varchar version_actual "max 20"
+        varchar estado "activo/en_desarrollo/pausado/archivado"
+        int responsable_id FK "a usuarios.id, nullable"
         date fecha_inicio
-        datetime fecha_actualizacion
+        datetime fecha_actualizacion "ON UPDATE"
     }
     articulos {
-        int id PK
-        int proyecto_id FK
-        varchar_300 titulo
-        varchar_320 slug UK
-        varchar_500 resumen
+        int id PK "auto increment"
+        int proyecto_id FK "a proyectos.id"
+        varchar titulo "max 300"
+        varchar slug UK "max 320"
+        varchar resumen "max 500"
         longtext contenido "HTML saneado"
-        varchar_20 tipo "guion|arquitectura|mecanica|personaje|nivel|tecnico|otro"
-        int autor_id FK "nullable"
-        int version "n versiones"
-        tinyint publicado
-        datetime actualizado
+        varchar tipo "guion/arquitectura/mecanica/personaje/nivel/tecnico/otro"
+        int autor_id FK "a usuarios.id, nullable"
+        int version "contador de versiones"
+        tinyint publicado "0 o 1"
+        datetime actualizado "ON UPDATE"
     }
     historial_versiones {
-        int id PK
-        int articulo_id FK
-        longtext contenido
-        int version
-        int editado_por FK "nullable"
+        int id PK "auto increment"
+        int articulo_id FK "a articulos.id"
+        longtext contenido "copia de la versión anterior"
+        int version "número de versión archivada"
+        int editado_por FK "a usuarios.id, nullable"
         datetime editado_en
     }
     tags {
-        int id PK
-        varchar_100 nombre
-        varchar_120 slug UK
+        int id PK "auto increment"
+        varchar nombre "max 100"
+        varchar slug UK "max 120"
     }
     articulo_tags {
-        int articulo_id PK_FK
-        int tag_id PK_FK
+        int articulo_id PK "FK a articulos.id"
+        int tag_id PK "FK a tags.id"
     }
     hitos {
-        int id PK
-        int proyecto_id FK
-        varchar_200 titulo
+        int id PK "auto increment"
+        int proyecto_id FK "a proyectos.id"
+        varchar titulo "max 200"
         text descripcion
         tinyint porcentaje_avance "0 a 100"
         date fecha
-        int creado_por FK "nullable"
+        int creado_por FK "a usuarios.id, nullable"
     }
     noticias {
-        int id PK
-        varchar_300 titulo
-        varchar_320 slug UK
-        varchar_600 resumen
-        longtext contenido
-        varchar_100 categoria
-        int autor_id FK "nullable"
-        varchar_20 estado "borrador|pendiente|publicada|rechazada"
-        tinyint destacada
-        int aprobado_por FK "nullable"
+        int id PK "auto increment"
+        varchar titulo "max 300"
+        varchar slug UK "max 320"
+        varchar resumen "max 600"
+        longtext contenido "HTML saneado"
+        varchar categoria "texto libre"
+        int autor_id FK "a usuarios.id, nullable"
+        varchar estado "borrador/pendiente/publicada/rechazada"
+        tinyint destacada "0 o 1"
+        int aprobado_por FK "a usuarios.id, nullable"
         datetime fecha_publicacion
         text razon_rechazo
     }
     media {
-        int id PK
-        varchar_20 entidad_tipo "articulo|noticia|proyecto"
-        int entidad_id "sin FK polimorfico"
-        varchar_20 tipo "imagen|video|documento"
-        varchar_255 nombre_original
-        varchar_64 nombre_guardado UK "32 hex + extension"
-        varchar_100 mime
-        int tamano
-        tinyint es_principal
-        int subido_por FK "nullable"
+        int id PK "auto increment"
+        varchar entidad_tipo "articulo/noticia/proyecto"
+        int entidad_id "sin FK: polimorfico"
+        varchar tipo "imagen/video/documento"
+        varchar nombre_original "max 255"
+        varchar nombre_guardado UK "32 hex + extension"
+        varchar mime "MIME real por finfo"
+        int tamano "bytes"
+        tinyint es_principal "0 o 1"
+        int subido_por FK "a usuarios.id, nullable"
     }
     mensajes_contacto {
-        int id PK
-        varchar_150 nombre
-        varchar_150 email
+        int id PK "auto increment"
+        varchar nombre "max 150"
+        varchar email "max 150"
         text mensaje
-        varchar_45 ip
-        tinyint leido
-        tinyint enviado_ok
+        varchar ip "IPv4 o IPv6"
+        tinyint leido "0 o 1"
+        tinyint enviado_ok "correo de respuesta"
     }
     eventos_seguridad {
-        bigint id PK
-        varchar_40 tipo
-        varchar_150 usuario "nombre o id"
-        varchar_45 ip
+        bigint id PK "auto increment"
+        varchar tipo "login_exitoso, csrf_invalido, etc."
+        varchar usuario "nombre o id, sin FK"
+        varchar ip "IPv4 o IPv6"
         text detalle
     }
     migraciones {
-        int id PK
-        varchar_120 archivo UK
-        char_64 checksum
+        int id PK "auto increment"
+        varchar archivo UK "NNNN_nombre.sql"
+        char checksum "sha256 del archivo"
         datetime aplicado_en
     }
     config_sitio {
-        varchar_60 clave PK
+        varchar clave PK "max 60"
         text valor
-        datetime actualizado_en
+        datetime actualizado_en "ON UPDATE"
     }
 ```
 
@@ -483,8 +482,7 @@ sequenceDiagram
 
     S->>M: POST accion=aprobar, noticia_id, csrf_token
     M->>M: verifyCsrf()
-    M->>DB: UPDATE noticias SET estado='publicada', aprobado_por=?, fecha_publicacion=NOW()
-            WHERE id=? AND estado='pendiente'
+    M->>DB: UPDATE noticias SET estado='publicada', aprobado_por=?, fecha_publicacion=NOW() WHERE id=? AND estado='pendiente'
     DB-->>M: filas afectadas
     alt 0 filas
         M-->>S: «La noticia ya fue revisada»

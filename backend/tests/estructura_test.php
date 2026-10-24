@@ -168,7 +168,7 @@ $claves = [
     'backend/.htaccess', 'backend/config/config.php', 'backend/config/db.php',
     'backend/database/database.sql', 'backend/storage/.htaccess',
     'frontend/partials/header.php', 'frontend/partials/footer.php',
-    'frontend/partials/.htaccess', 'frontend/assets/img/favicon.svg',
+    'frontend/partials/.htaccess', 'frontend/assets/img/favicon.png',
     'frontend/css/base.css', 'frontend/css/layout.css', 'frontend/css/components.css',
     'frontend/css/pages.css', 'frontend/css/admin.css',
     'frontend/js/main.js', 'frontend/js/editor.js',
@@ -182,6 +182,90 @@ foreach ($claves as $c) {
         falla('falta el archivo ' . $c);
     }
 }
+
+// ── 6. Accesibilidad básica ─────────────────────────────────
+echo "· 6. Accesibilidad básica\n";
+// Quita comentarios y la interpolación PHP embebida (signos de
+// apertura/cierre de etiqueta corta) para no confundir los patrones
+// con ejemplos del propio código. OJO: un cierre de etiqueta dentro
+// de un comentario // cierra el modo PHP y vuelca el archivo a la
+// salida — por eso acá no se escriben literales completos.
+function textoLimpio(string $texto): string {
+    $texto = (string) preg_replace('#/\*.*?\*/#s', '', $texto);
+    $texto = (string) preg_replace('#^\s*//.*$#m', '', $texto);
+    return (string) preg_replace('/<\?=.*?(?:\?>|$)/s', 'X', $texto);
+}
+
+$publicas = glob($raiz . '/frontend/*.php') ?: [];
+foreach ($publicas as $ruta) {
+    $bruto = (string) file_get_contents($ruta);
+    $texto = textoLimpio($bruto);
+    $base  = substr($ruta, strlen($raiz) + 1);
+
+    // <img> siempre con alt (vacío explícito si es decorativa)
+    preg_match_all('/<img\b[^>]*>/i', $texto, $mImg);
+    foreach ($mImg[0] as $tag) {
+        if (!preg_match('/\salt\s*=\s*"/i', $tag)) {
+            falla("$base: <img> sin alt → " . substr($tag, 0, 60));
+        }
+    }
+    // Toda pantalla que usa el layout tiene un <h1> (jerarquía de títulos)
+    if (str_contains($bruto, 'abrirPagina(') && !preg_match('/<h1[\s>]/i', $texto)) {
+        falla("$base: no tiene <h1>");
+    }
+}
+
+// Los helpers de render también emiten <img>
+foreach (glob($raiz . '/backend/lib/*.php') ?: [] as $ruta) {
+    $texto = textoLimpio((string) file_get_contents($ruta));
+    preg_match_all('/<img\b[^>]*>/i', $texto, $mImg);
+    foreach ($mImg[0] as $tag) {
+        if (!preg_match('/\salt\s*=\s*"/i', $tag)) {
+            falla(basename($ruta) . ": <img> sin alt → " . substr($tag, 0, 60));
+        }
+    }
+}
+
+// ── 7. CSRF en todo formulario POST ─────────────────────────
+echo "· 7. Token CSRF en formularios\n";
+foreach ($archivosPhp as $ruta) {
+    $excluido = false;
+    foreach (['/vendor/', '/tests/'] as $e) {
+        if (str_contains($ruta, $e)) { $excluido = true; break; }
+    }
+    if ($excluido) continue;
+
+    $texto = (string) file_get_contents($ruta);
+    $base  = substr($ruta, strlen($raiz) + 1);
+    preg_match_all('/<form\b[^>]*method="post"[^>]*>/i', $texto, $mForm);
+    foreach ($mForm[0] as $i => $tag) {
+        // Se mira un tramo del formulario buscando el token
+        $desde  = $mForm[0][$i] === '' ? 0 : strpos($texto, $tag);
+        $tramo  = $desde === false ? '' : substr($texto, $desde, 1200);
+        if (!str_contains($tramo, 'campoCSRF') && !str_contains($tramo, 'csrf_token')) {
+            falla("$base: formulario POST sin token CSRF → " . substr($tag, 0, 60));
+        }
+    }
+}
+
+// ── 8. Enlaces internos que apuntan a archivos existentes ────
+echo "· 8. Enlaces internos\n";
+foreach ($archivosPhp as $ruta) {
+    $texto = (string) file_get_contents($ruta);
+    $base  = substr($ruta, strlen($raiz) + 1);
+    preg_match_all("/url\\(\\s*'([^']+)'\\s*\\)/", $texto, $mUrl);
+    foreach ($mUrl[1] as $destino) {
+        if (!str_ends_with($destino, '.php') && !str_contains($destino, '.php?')) {
+            continue;    // sólo se verifican rutas .php
+        }
+        $limpio = explode('?', $destino)[0];
+        if ($limpio === '' || str_starts_with($limpio, 'http')) continue;
+        if (!is_file($raiz . '/frontend/' . $limpio)) {
+            falla("$base: url('$destino') no existe en frontend/");
+        }
+    }
+}
+echo "  ok: rutas .php referenciadas existen\n";
 
 // ── Resumen ─────────────────────────────────────────────────
 echo "\n" . ($fallas === 0 ? "Todo OK\n" : "$fallas falla(s)\n");
