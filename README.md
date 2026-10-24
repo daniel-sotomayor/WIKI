@@ -46,11 +46,14 @@ Toda la documentación vive en [`docs/`](docs/):
 | Documento | Contenido |
 |---|---|
 | [`LEEME.md`](docs/LEEME.md) | Guía general de uso e instalación |
+| [`MANUAL-DE-USUARIO.md`](docs/MANUAL-DE-USUARIO.md) | Pantallas, flujos y recetas para usar el sistema |
 | [`ARQUITECTURA.md`](docs/ARQUITECTURA.md) | Capas, flujo de petición, módulos |
+| [`GUIA-DESARROLLADOR.md`](docs/GUIA-DESARROLLADOR.md) | Convenciones, recetas para extender y checklist |
 | [`DISENO.md`](docs/DISENO.md) | Tokens, componentes, responsive, accesibilidad |
 | [`MODELO-DE-DATOS.md`](docs/MODELO-DE-DATOS.md) | Tablas, relaciones, vistas, cascadas |
 | [`DIAGRAMAS.md`](docs/DIAGRAMAS.md) | ER, casos de uso, procesos, secuencias (Mermaid + SVG) |
 | [`CODIGO.md`](docs/CODIGO.md) | Catálogo de helpers |
+| [`GLOSARIO.md`](docs/GLOSARIO.md) | Términos del sistema |
 | [`PRUEBAS.md`](docs/PRUEBAS.md) | Cómo correr y escribir pruebas |
 | [`OPERACION.md`](docs/OPERACION.md) | Despliegue, respaldos, migraciones, correo |
 | [`SEGURIDAD.md`](docs/SEGURIDAD.md) | Modelo de amenazas y medidas |

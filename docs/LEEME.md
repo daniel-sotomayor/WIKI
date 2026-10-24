@@ -31,15 +31,23 @@ Stack: **PHP 8.1+ · MySQL/MariaDB · HTML5 · CSS3 · JavaScript puro**
 | Documento | Contenido |
 |---|---|
 | [`LEEME.md`](LEEME.md) | Este manual: instalación, uso y solución de problemas |
+| [`MANUAL-DE-USUARIO.md`](MANUAL-DE-USUARIO.md) | Qué hace cada pantalla, flujos (moderación, versiones) y recetas rápidas |
 | [`ARQUITECTURA.md`](ARQUITECTURA.md) | Capas, flujo de una petición, módulos y decisiones de diseño |
+| [`GUIA-DESARROLLADOR.md`](GUIA-DESARROLLADOR.md) | Convenciones, recetas para extender el código y checklist de entrega |
 | [`DISENO.md`](DISENO.md) | Sistema de diseño: tokens, componentes, responsive y accesibilidad |
 | [`MODELO-DE-DATOS.md`](MODELO-DE-DATOS.md) | Tabla por tabla, claves, relaciones e índices |
 | [`DIAGRAMAS.md`](DIAGRAMAS.md) | Entidad-relación, casos de uso, procesos, secuencia y estados (Mermaid; SVG listos en `docs/diagramas/`) |
 | [`CODIGO.md`](CODIGO.md) | Catálogo de funciones de la capa de helpers |
+| [`GLOSARIO.md`](GLOSARIO.md) | Términos del sistema (capacidad, media, slug, migración…) |
 | [`PRUEBAS.md`](PRUEBAS.md) | Cómo correr y escribir pruebas |
 | [`OPERACION.md`](OPERACION.md) | Despliegue, respaldos, migraciones y correo |
 | [`SEGURIDAD.md`](SEGURIDAD.md) | Modelo de amenazas y medidas aplicadas |
 | [`CAMBIOS.md`](CAMBIOS.md) | Historial de desarrollo y verificaciones |
+
+**Por dónde empezar**: si vas a *usar* el sistema →
+[`MANUAL-DE-USUARIO.md`](MANUAL-DE-USUARIO.md); si vas a *instalarlo* →
+sigue éste; si vas a *programar* →
+[`GUIA-DESARROLLADOR.md`](GUIA-DESARROLLADOR.md).
 
 ---
 
@@ -87,8 +95,8 @@ sudo systemctl start mariadb
    - Abrí `http://localhost/phpmyadmin`
    - *Importar* → elegí `telecom_wiki/backend/database/database.sql` →
      *Continuar*.
-   - El script crea la base `telecom_wiki`, las 12 tablas y los datos de
-     ejemplo (no hace falta crear la base antes).
+   - El script crea la base `telecom_wiki`, las 14 tablas, las 4 vistas
+     y los datos de ejemplo (no hace falta crear la base antes).
 4. **Verificá la conexión**: abrí
    `http://localhost/telecom_wiki/frontend/` — debe mostrarse la portada.
 5. **Ingresá** en `http://localhost/telecom_wiki/frontend/login.php`:
@@ -372,12 +380,15 @@ Hay un corredor de pruebas propio (sin dependencias externas):
 php backend/tests/run.php
 ```
 
-Ejecuta dos suites y devuelve código de salida `0` si todo pasa:
+Ejecuta las cuatro suites del directorio y devuelve código de salida `0`
+si todo pasa (ver [`PRUEBAS.md`](PRUEBAS.md) para el detalle):
 
 | Suite | Qué comprueba |
 |---|---|
-| `backend/tests/sanitize_test.php` | 16 payloads XSS no sobreviven y el HTML legítimo se conserva (rutas con y sin extensión DOM) |
-| `backend/tests/estructura_test.php` | sintaxis PHP, ausencia de handlers/`style=` en línea (CSP), cobertura de clases CSS, referencias a CSS/JS y archivos clave |
+| `sanitize_test.php` | 16 payloads XSS no sobreviven y el HTML legítimo se conserva (70 pruebas) |
+| `estructura_test.php` | sintaxis PHP, CSP (sin handlers/`style=` inline), clases CSS, accesibilidad (`alt`, `<h1>`), CSRF en todo POST, enlaces `url()` existentes |
+| `correo_test.php` | transporte de correo por archivo: `.eml` con cabeceras correctas |
+| `http_test.php` | recorrido end-to-end con `php -S` + curl: login, CSRF 403, subidas, `media.php`, moderación, mantenimiento 503 (se omite si no hay BD) |
 
 Verificación rápida suelta:
 

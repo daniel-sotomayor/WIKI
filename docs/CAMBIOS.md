@@ -212,3 +212,22 @@ estado `ii`, sin paquetes rotos en `dpkg`.
   (70 pruebas DOM).
 - Recorrido manual con `./dev-server.sh`: todas las pantallas en 200
   sin avisos PHP 8.4.
+
+## Documentación para el equipo (2026-10-24)
+
+Se completaron los tres documentos que faltaban para que un integrante
+nuevo pueda entender y trabajar sobre el proyecto sin contexto previo:
+
+- `docs/MANUAL-DE-USUARIO.md` — qué hace cada pantalla pública y del
+  panel, flujos (moderación de noticias, versiones de artículos,
+  hitos/avance), recetas rápidas y reglas de usuario.
+- `docs/GUIA-DESARROLLADOR.md` — patrón de pantalla, convenciones
+  obligatorias (CSP, CSRF, SQL preparado, permisos por capacidad),
+  recetas paso a paso (pantalla nueva, capacidad, migración, subidas,
+  pruebas), flujo de git y checklist de entrega.
+- `docs/GLOSARIO.md` — términos del sistema (capacidad, media
+  polimórfico, slug, migración, transporte de correo, etc.).
+
+Actualizaciones de coherencia: `LEEME.md` (14 tablas + 4 vistas, 4
+suites de pruebas, índice con los documentos nuevos y punto de partida
+según el rol del lector) y `README.md` (tabla de documentación).
