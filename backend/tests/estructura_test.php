@@ -267,6 +267,85 @@ foreach ($archivosPhp as $ruta) {
 }
 echo "  ok: rutas .php referenciadas existen\n";
 
+// ── 9. Sistema de temas (modo oscuro/claro) ────────────────
+//  · base.css define DOS bloques oscuros con idénticas
+//    declaraciones: [data-tema='oscuro'] (lo aplica JS) y
+//    @media (prefers-color-scheme: dark) :root:not([data-tema])
+//    (respaldo sin JS). Si difieren, un modo se desincroniza.
+//  · Todo var(--token) referenciado en cualquier CSS debe estar
+//    definido en :root o en los bloques oscuros (o traer valor
+//    por defecto inline).
+echo "· 9. Sistema de temas (oscuro/claro)\n";
+
+$baseCss = (string) file_get_contents($raiz . '/frontend/css/base.css');
+
+function bloqueCss(string $css, string $inicio): ?string {
+    $p = strpos($css, $inicio);
+    if ($p === false) return null;
+    $fin = strpos($css, '}', $p);
+    return $fin === false ? null : substr($css, $p, $fin - $p + 1);
+}
+function declaraciones(string $bloque): string {
+    $interno = substr($bloque, strpos($bloque, '{') + 1, -1);
+    return (string) preg_replace('/\s+/', ' ', trim($interno));
+}
+
+$bloqueAttr = bloqueCss($baseCss, ":root[data-tema='oscuro']");
+$bloqueMedia = null;
+if (preg_match('#@media\s*\(prefers-color-scheme:\s*dark\)#', $baseCss, $m, PREG_OFFSET_CAPTURE)) {
+    $p = $m[0][1];
+    $sub = substr($baseCss, $p);
+    if (preg_match('#:root:not\(\[data-tema\]\)#', $sub, $m2, PREG_OFFSET_CAPTURE)) {
+        $p2 = $p + $m2[0][1];
+        $fin = strpos($baseCss, '}', $p2);
+        $bloqueMedia = $fin === false ? null : substr($baseCss, $p2, $fin - $p2 + 1);
+    }
+}
+
+if ($bloqueAttr === null) {
+    falla('base.css: falta el bloque ":root[data-tema=\'oscuro\']"');
+}
+if ($bloqueMedia === null) {
+    falla('base.css: falta el bloque @media (prefers-color-scheme: dark) '
+        . ':root:not([data-tema]) — respaldo sin JavaScript');
+}
+if ($bloqueAttr !== null && $bloqueMedia !== null
+    && declaraciones($bloqueAttr) !== declaraciones($bloqueMedia)) {
+    falla('los dos bloques oscuros de base.css no coinciden: '
+        . 'JS y el respaldo sin JS aplicarían temas distintos');
+}
+if ($bloqueAttr !== null && !str_contains($bloqueAttr, 'color-scheme: dark')) {
+    falla('el bloque oscuro no declara color-scheme: dark (controles nativos)');
+}
+
+// Tokens definidos: :root principal + los dos bloques oscuros
+$definidos = [];
+if (preg_match('#:root\s*\{[^}]*\}#', $baseCss, $mRaiz)) {
+    preg_match_all('/(--[a-z0-9-]+)\s*:/', $mRaiz[0], $mDef);
+    foreach ($mDef[1] as $t) $definidos[$t] = true;
+}
+foreach ([$bloqueAttr, $bloqueMedia] as $b) {
+    if ($b === null) continue;
+    preg_match_all('/(--[a-z0-9-]+)\s*:/', $b, $mDef);
+    foreach ($mDef[1] as $t) $definidos[$t] = true;
+}
+
+$sinDefinir = 0;
+foreach ((glob($raiz . '/frontend/css/*.css') ?: []) as $rutaCss) {
+    $css = (string) file_get_contents($rutaCss);
+    // var(--token) sin valor por defecto debe existir
+    preg_match_all('/var\(\s*(--[a-z0-9-]+)\s*\)/', $css, $mVar);
+    foreach ($mVar[1] as $token) {
+        if (!isset($definidos[$token])) {
+            falla(basename($rutaCss) . ": var($token) sin definir en :root ni en el tema oscuro");
+            $sinDefinir++;
+        }
+    }
+}
+if ($sinDefinir === 0) {
+    echo "  ok: bloques oscuros idénticos y todos los tokens definidos\n";
+}
+
 // ── Resumen ─────────────────────────────────────────────────
 echo "\n" . ($fallas === 0 ? "Todo OK\n" : "$fallas falla(s)\n");
 exit($fallas === 0 ? 0 : 1);

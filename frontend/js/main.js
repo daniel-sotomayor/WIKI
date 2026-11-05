@@ -178,5 +178,65 @@
         }
       });
     });
+
+    // ── Modo oscuro / claro ────────────────────────────────
+    //  <head> ya resolvió la preferencia (script con nonce) y dejó
+    //  data-tema ('claro'|'oscuro') y data-tema-pref
+    //  ('auto'|'claro'|'oscuro') en <html>. Acá sólo:
+    //  · el clic del alternador fuerza el tema opuesto y lo guarda
+    //    en localStorage ('tw-tema');
+    //  · en 'auto', los cambios del sistema se aplican en vivo;
+    //  · si otra pestaña cambia la preferencia, se sincroniza.
+    (function tema() {
+      var raiz = document.documentElement;
+      var boton = document.querySelector('[data-tema-toggle]');
+      var sistema = window.matchMedia('(prefers-color-scheme: dark)');
+      var ETIQUETAS = { auto: 'seguir el sistema', claro: 'claro', oscuro: 'oscuro' };
+
+      function pref()      { return raiz.getAttribute('data-tema-pref') || 'auto'; }
+      function efectivo()  { return raiz.getAttribute('data-tema') === 'oscuro' ? 'oscuro' : 'claro'; }
+
+      function aplicar(nuevaPref) {
+        var oscuro = nuevaPref === 'auto'
+          ? sistema.matches
+          : nuevaPref === 'oscuro';
+        raiz.setAttribute('data-tema', oscuro ? 'oscuro' : 'claro');
+        raiz.setAttribute('data-tema-pref', nuevaPref);
+        try { localStorage.setItem('tw-tema', nuevaPref); } catch (e) { /* modo privado */ }
+        pintar();
+      }
+
+      function pintar() {
+        if (!boton) return;
+        var actual = efectivo();
+        var siguiente = actual === 'oscuro' ? 'claro' : 'oscuro';
+        boton.setAttribute('aria-pressed', actual === 'oscuro' ? 'true' : 'false');
+        boton.setAttribute('aria-label',
+          'Tema: ' + ETIQUETAS[pref()] + '. Activar modo ' + siguiente);
+      }
+
+      if (boton) {
+        boton.addEventListener('click', function () {
+          aplicar(efectivo() === 'oscuro' ? 'claro' : 'oscuro');
+        });
+      }
+
+      // El usuario no forzó nada: el sistema manda en caliente.
+      sistema.addEventListener('change', function () {
+        if (pref() === 'auto') aplicar('auto');
+      });
+
+      // Otra pestaña cambió la preferencia.
+      window.addEventListener('storage', function (e) {
+        if (e.key !== 'tw-tema') return;
+        var p = e.newValue || 'auto';
+        var oscuro = p === 'auto' ? sistema.matches : p === 'oscuro';
+        raiz.setAttribute('data-tema', oscuro ? 'oscuro' : 'claro');
+        raiz.setAttribute('data-tema-pref', p);
+        pintar();
+      });
+
+      pintar();
+    })();
   });
 })();

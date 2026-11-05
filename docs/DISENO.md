@@ -89,3 +89,52 @@ pequeñas mejoras de formulario. Sin handlers inline (CSP); los datos
 necesarios para JS se pasan en `<input type="hidden">` y se leen con
 `dataset`. La página funciona sin JS para los flujos esenciales
 (navegación, CRUD, subidas).
+
+## Modo oscuro / claro
+
+El sistema tiene dos temas con alternador en la cabecera (y en el
+panel). No hay CSS duplicado: un **único conjunto de tokens** cambia
+de valor.
+
+### Cómo funciona
+
+1. **Tokens semánticos** (`base.css`, bloque `:root`): las vistas
+   usan `--bg`, `--surface`, `--heading`, `--text`, `--border`,
+   `--field-border`, `--link`, `--code-bg`, los estados
+   (`--ok-*`/`--warn-*`/`--danger-*`/`--info-*`), los bordes
+   (`--*-line`) y las insignias de rol (`--role-*-bg/fg`). En modo
+   claro derivan de los materiales; en oscuro se redefinen.
+2. **Bloque oscuro doble** en `base.css` con declaraciones
+   **idénticas**: `:root[data-tema='oscuro']` (lo aplica JS) y
+   `@media (prefers-color-scheme: dark) :root:not([data-tema])`
+   (respaldo si no hay JS). El test de estructura (sección 9)
+   verifica que coincidan y que **todo `var(--token)` esté definido**.
+3. **Sin parpadeos**: el script con nonce del `<head>`
+   (`partials/header.php`) resuelve `localStorage['tw-tema']`
+   (`'auto'|'claro'|'oscuro'`) contra `prefers-color-scheme` y setea
+   `data-tema` antes del primer pintado.
+4. **Alternador** (`.theme-toggle` en la cabecera): un clic fuerza el
+   tema opuesto y lo guarda en `localStorage`. En `auto` los cambios
+   del sistema se aplican en vivo (`matchMedia`) y otras pestañas se
+   sincronizan vía evento `storage`. Sin JS el botón no aparece
+   (`html.js`) y manda el CSS del sistema.
+
+### Reglas para agregar colores
+
+- **Nunca** colores literales fuera de `:root` y de los dos bloques
+  oscuros: creá un token semántico y definilo **en los tres lugares**
+  (claro + los dos bloques oscuros idénticos).
+- Superficies fijas de marca (footer, barra superior, `.panel--oscuro`,
+  `.chip--version`, botones primarios/dorados) conservan los materiales
+  `--navy`/`--blue`/`--gold`: son oscuras en ambos temas y **no** se
+  tocan en el bloque oscuro.
+- Texto sobre fondos de marca oscura usa `#fff` a distintas opacidades
+  (permitido como literal).
+- Contraste mínimo AA (4.5:1) para texto; 3:1 para bordes de campos
+  (`--field-border`). La paleta oscura está verificada.
+
+### Verificación
+
+```bash
+php backend/tests/estructura_test.php   # sección 9: bloques idénticos + tokens
+```

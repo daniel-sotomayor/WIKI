@@ -118,3 +118,23 @@ aparece en la ficha pública correspondiente.
 5. **Roles**: las capacidades están en la tabla de
    [`LEEME.md` §7](LEEME.md#7-roles-y-permisos); un editor sólo puede
    editar contenidos propios, un supervisor moderará cualquier noticia.
+
+---
+
+## Modo oscuro y claro
+
+La cabecera (y el panel) incluyen un botón con ícono de sol/luna para
+cambiar entre **modo claro** y **modo oscuro**.
+
+- **Primera visita**: el sitio sigue el tema de tu sistema operativo
+  (si tu equipo está en oscuro, el sitio abre oscuro).
+- **Al pulsar el botón**: se activa el tema contrario al actual y
+  queda **guardado en ese navegador** (se aplica en todas las páginas
+  y en próximas visitas).
+- **Sin JavaScript**: el botón no aparece y el sitio sigue el tema
+  del sistema automáticamente.
+
+Para volver al modo "seguir el sistema", borrá el dato guardado del
+sitio en la configuración de privacidad de tu navegador (la clave es
+`tw-tema`), o usá una ventana de navegación privada.
+

@@ -45,7 +45,7 @@ $cssExtra   = $cssExtra ?? '';
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="<?= e($descripcion) ?>">
     <meta name="author" content="Telecom Venezuela, C.A. — Departamento de Desarrollo">
-    <meta name="color-scheme" content="light">
+    <meta name="color-scheme" content="light dark">
     <meta name="theme-color" content="#0B1F3A">
     <title><?= e($pageTitle ?? SITE_NAME) ?> · <?= e(SITE_NAME) ?></title>
 
@@ -60,9 +60,22 @@ $cssExtra   = $cssExtra ?? '';
 
     <!-- Marca <html class="js"> sólo si hay JavaScript: así las
          animaciones de aparición se activan sin parpadeo previo
-         y sin romper la CSP (el script lleva nonce). -->
+         y sin romper la CSP (el script lleva nonce).
+         Aplica además el tema guardado ANTES del primer pintado
+         para evitar el destello blanco en modo oscuro: resuelve la
+         preferencia de localStorage ('auto'|'claro'|'oscuro') con
+         prefers-color-scheme como valor por defecto. -->
     <script nonce="<?= e($GLOBALS['CSP_NONCE'] ?? '') ?>">
         document.documentElement.classList.add('js');
+        // Primero se resuelve el tema (sin depender de localStorage
+        // para el resultado); después se intenta leer la preferencia.
+        var pref = 'auto';
+        try { pref = localStorage.getItem('tw-tema') || 'auto'; } catch (e) { /* privado */ }
+        var oscuro = pref === 'auto'
+            ? window.matchMedia('(prefers-color-scheme: dark)').matches
+            : pref === 'oscuro';
+        document.documentElement.setAttribute('data-tema', oscuro ? 'oscuro' : 'claro');
+        document.documentElement.setAttribute('data-tema-pref', pref);
     </script>
 </head>
 <body>
@@ -116,6 +129,27 @@ $cssExtra   = $cssExtra ?? '';
         </nav>
 
         <div class="site-header__actions">
+
+            <!-- Modo oscuro/claro: sin JS no se muestra (la clase
+                 .js la pone el script del <head>). Lo maneja
+                 main.js → módulo del tema. -->
+            <button class="theme-toggle" type="button" data-tema-toggle
+                    aria-pressed="false"
+                    aria-label="Cambiar entre modo claro y modo oscuro">
+                <svg class="theme-toggle__icon theme-toggle__icon--sol"
+                     width="18" height="18" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                     aria-hidden="true">
+                    <circle cx="12" cy="12" r="4"/>
+                    <path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+                </svg>
+                <svg class="theme-toggle__icon theme-toggle__icon--luna"
+                     width="18" height="18" viewBox="0 0 24 24" fill="currentColor"
+                     aria-hidden="true">
+                    <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+                </svg>
+            </button>
+
 <?php if ($usuario === null): ?>
             <a class="btn btn-outline btn-sm" href="<?= e(url('login.php')) ?>">
                 <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">

@@ -62,7 +62,7 @@
 
 .panel--version-actual {
   border: 2px solid var(--gold);
-  background: #FFFDF6;
+  background: var(--gold-bg);
 }
 
 .detalle-version { margin-top: .5rem; }
@@ -213,7 +213,7 @@
   flex-wrap: wrap;
   margin-bottom: .5rem;
 }
-.guia-plantilla__cabecera strong { font-size: .85rem; color: var(--navy); }
+.guia-plantilla__cabecera strong { font-size: .85rem; color: var(--heading); }
 .guia-plantilla ul {
   padding-left: 1.1rem;
   list-style: disc;
@@ -222,7 +222,7 @@
   line-height: 1.6;
 }
 .guia-plantilla li { margin-bottom: .15rem; }
-.guia-plantilla li strong { color: var(--navy); }
+.guia-plantilla li strong { color: var(--heading); }
 .guia-plantilla__nota { font-size: .72rem; color: var(--text-muted); margin-top: .5rem; }
 
 /* ── Campos de moderación ─────────────────────────────────── */

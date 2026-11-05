@@ -55,7 +55,7 @@
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.15rem;
-  color: var(--navy);
+  color: var(--heading);
   letter-spacing: -.01em;
   line-height: 1.1;
 }
@@ -79,23 +79,49 @@
   border-radius: var(--radius);
   transition: background var(--transition), color var(--transition);
 }
-.site-nav a:hover { background: var(--grey-100); color: var(--navy); }
-.site-nav a.is-active { background: var(--grey-100); color: var(--blue); font-weight: 600; }
+.site-nav a:hover { background: var(--surface-2); color: var(--heading); }
+.site-nav a.is-active { background: var(--surface-2); color: var(--blue); font-weight: 600; }
 
 /* Botón hamburguesa (móvil) */
 .nav-toggle {
   display: none;
   background: none;
-  border: 1px solid var(--grey-300);
+  border: 1px solid var(--field-border);
   border-radius: var(--radius);
   padding: .35rem .5rem;
-  color: var(--navy);
+  color: var(--heading);
   cursor: pointer;
 }
 
 /* ── Acciones de la cabecera ──────────────────────────────── */
 
 .site-header__actions { display: flex; align-items: center; gap: .6rem; margin-left: auto; }
+
+/* ── Alternador de modo oscuro/claro ───────────────────────
+   Oculto sin JS (la clase html.js la pone el script con nonce);
+   main.js cambia data-tema en <html> y actualiza aria-pressed. */
+.theme-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--field-border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--heading);
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition),
+              color var(--transition);
+}
+.theme-toggle:hover { background: var(--surface-2); border-color: var(--blue-lt); color: var(--blue-lt); }
+html.js .theme-toggle { display: inline-flex; }
+.theme-toggle__icon { display: block; flex-shrink: 0; }
+html[data-tema='oscuro'] .theme-toggle__icon--sol  { display: none; }
+html:not([data-tema='oscuro']) .theme-toggle__icon--luna { display: none; }
+/* Estado pulsado: marca que el tema está forzado a mano */
+html[data-tema-pref='claro'] .theme-toggle,
+html[data-tema-pref='oscuro'] .theme-toggle { border-color: var(--blue-lt); }
 
 .user-badge {
   display: flex;
@@ -104,11 +130,11 @@
   font-size: .8rem;
   color: var(--grey-700);
 }
-.user-badge__nombre { font-weight: 600; color: var(--navy); }
+.user-badge__nombre { font-weight: 600; color: var(--heading); }
 .user-dot {
   width: 8px; height: 8px;
   border-radius: 50%;
-  background: #22c55e;
+  background: var(--ok-solid);
   flex-shrink: 0;
 }
 

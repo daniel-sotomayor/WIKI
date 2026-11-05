@@ -130,7 +130,7 @@
   color: var(--text-muted);
   margin-bottom: .15rem;
 }
-.ficha dd { font-size: .9rem; color: var(--navy); font-weight: 500; }
+.ficha dd { font-size: .9rem; color: var(--heading); font-weight: 500; }
 .ficha--compacta {
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 1rem;
@@ -371,7 +371,7 @@
   color: var(--blue);
   margin-bottom: .6rem;
 }
-.tarjeta-info strong { display: block; font-size: .88rem; color: var(--navy); margin-bottom: .3rem; }
+.tarjeta-info strong { display: block; font-size: .88rem; color: var(--heading); margin-bottom: .3rem; }
 .tarjeta-info p { font-size: .8rem; color: var(--text-muted); }
 
 .lista-roles { display: flex; flex-direction: column; gap: .75rem; }
@@ -385,11 +385,11 @@
   border-left: 4px solid var(--grey-300);
 }
 .lista-roles__item--admin      { border-left-color: var(--gold); }
-.lista-roles__item--supervisor { border-left-color: #6D28D9; }
-.lista-roles__item--editor     { border-left-color: #22c55e; }
+.lista-roles__item--supervisor { border-left-color: var(--role-supervisor-fg); }
+.lista-roles__item--editor     { border-left-color: var(--ok-solid); }
 .lista-roles__item--lector     { border-left-color: var(--grey-300); }
 .lista-roles__item .role-tag { flex-shrink: 0; margin-top: .2rem; }
-.lista-roles__item strong { font-size: .9rem; color: var(--navy); }
+.lista-roles__item strong { font-size: .9rem; color: var(--heading); }
 .lista-roles__item p { font-size: .83rem; color: var(--text-muted); margin-top: .2rem; }
 
 .stats-institucion {

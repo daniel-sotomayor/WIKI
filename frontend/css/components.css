@@ -41,10 +41,10 @@
 .btn-outline:hover { background: var(--blue-lt); color: #fff; }
 
 .btn-ghost { background: transparent; color: var(--grey-700); border-color: transparent; }
-.btn-ghost:hover { background: var(--grey-100); color: var(--navy); }
+.btn-ghost:hover { background: var(--surface-2); color: var(--heading); }
 
-.btn-danger { background: var(--danger-bg); color: var(--danger-fg); border-color: #FCA5A5; }
-.btn-danger:hover { background: #EF4444; color: #fff; border-color: #EF4444; }
+.btn-danger { background: var(--danger-bg); color: var(--danger-fg); border-color: var(--danger-line); }
+.btn-danger:hover { background: var(--danger-solid); color: #fff; border-color: var(--danger-solid); }
 
 /* ── Miga de pan ──────────────────────────────────────────── */
 
@@ -123,8 +123,8 @@
   font-size: .7rem;
   font-weight: 700;
   color: var(--gold);
-  background: #FDF4E3;
-  border: 1px solid #F3E3BC;
+  background: var(--gold-bg);
+  border: 1px solid var(--gold-line);
   border-radius: var(--radius);
   padding: .2rem .45rem;
 }
@@ -141,10 +141,10 @@
 
 .panel--peligro {
   background: var(--danger-bg);
-  border-color: #FCA5A5;
+  border-color: var(--danger-line);
 }
 .panel--peligro .panel__titulo { color: var(--danger-fg); font-size: .95rem; }
-.panel--peligro p { font-size: .85rem; color: #7F1D1D; margin-bottom: 1rem; }
+.panel--peligro p { font-size: .85rem; color: var(--danger-deep); margin-bottom: 1rem; }
 
 /* ── Estado vacío ─────────────────────────────────────────── */
 
@@ -175,16 +175,16 @@
 .formulario { display: block; }
 
 .form-group { margin-bottom: 1.15rem; }
-.form-group--error .form-control { border-color: #EF4444; }
+.form-group--error .form-control { border-color: var(--danger-line); }
 
 .form-label {
   display: block;
   font-size: .85rem;
   font-weight: 600;
   margin-bottom: .4rem;
-  color: var(--navy);
+  color: var(--heading);
 }
-.obligatorio { color: #DC2626; }
+.obligatorio { color: var(--danger-fg); }
 
 .form-control {
   width: 100%;
@@ -201,7 +201,7 @@
 .form-control:focus {
   outline: none;
   border-color: var(--blue-lt);
-  box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+  box-shadow: var(--focus-ring);
 }
 .form-control--sm { padding: .38rem .7rem; font-size: .85rem; }
 select.form-control { cursor: pointer; }
@@ -231,7 +231,7 @@ input[type="file"].form-control {
   gap: .55rem;
   font-size: .88rem;
   font-weight: 500;
-  color: var(--navy);
+  color: var(--heading);
   cursor: pointer;
   padding-top: .35rem;
 }
@@ -482,7 +482,7 @@ input[type="file"].form-control {
   margin-bottom: 1.25rem;
 }
 .avance-global .progress { max-width: 320px; }
-.avance-global strong { color: var(--navy); }
+.avance-global strong { color: var(--heading); }
 
 /* ── Resultados de búsqueda ───────────────────────────────── */
 
@@ -508,7 +508,7 @@ input[type="file"].form-control {
 }
 .editor:focus-within {
   border-color: var(--blue-lt);
-  box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+  box-shadow: var(--focus-ring);
 }
 .editor-toolbar {
   display: flex;
@@ -582,6 +582,6 @@ input[type="file"].form-control {
   min-width: 0;
   flex: 1;
 }
-.adjunto__meta strong { font-size: .85rem; color: var(--navy); word-break: break-word; }
+.adjunto__meta strong { font-size: .85rem; color: var(--heading); word-break: break-word; }
 .adjunto__meta span { font-size: .74rem; color: var(--text-muted); }
 .adjunto video { width: 100%; max-width: 320px; border-radius: var(--radius); background: #000; }

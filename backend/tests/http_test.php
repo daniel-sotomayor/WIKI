@@ -160,6 +160,18 @@ foreach (['/frontend/index.php' => 'TelecomWiki', '/frontend/wiki.php' => '<h1',
 }
 ok('páginas públicas responden 200');
 
+// Alternador de tema presente y meta de esquema correcta
+[$c, , $html] = peticion('GET', '/frontend/index.php');
+if ($c !== 200 || !str_contains($html, 'data-tema-toggle')) {
+    falla('la portada no muestra el alternador de tema');
+} elseif (!str_contains($html, 'color-scheme" content="light dark')) {
+    falla('la meta color-scheme no permite ambos temas');
+} elseif (!str_contains($html, 'localStorage.getItem(\'tw-tema\')')) {
+    falla('falta el script anti-flash del tema en el <head>');
+} else {
+    ok('alternador de tema, meta light dark y script anti-flash');
+}
+
 [$c, $redir] = peticion('GET', '/frontend/admin/index.php');
 if ($c !== 302 || !str_contains($redir, 'login.php')) {
     falla("panel sin sesión → $c $redir (esperado 302 a login)");

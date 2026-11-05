@@ -231,3 +231,31 @@ nuevo pueda entender y trabajar sobre el proyecto sin contexto previo:
 Actualizaciones de coherencia: `LEEME.md` (14 tablas + 4 vistas, 4
 suites de pruebas, índice con los documentos nuevos y punto de partida
 según el rol del lector) y `README.md` (tabla de documentación).
+
+## Fase 10 — Modo oscuro / claro (2026-10-25)
+
+- **Capa de tokens semánticos** en `frontend/css/base.css`:
+  `--bg`, `--surface`, `--surface-2`, `--border`, `--field-border`,
+  `--heading`, `--link`, `--code-bg`, `--muted-strong`, `--focus-ring`,
+  bordes de estado (`--*-line`), `--gold-bg/line`, `--danger-solid/deep`
+  e insignias de rol (`--role-*-bg/fg`). Los ~30 colores literales
+  fuera de marca (alertas, roles, errores de formulario, foco, panel de
+  versión, punto de estado) ahora pasan por tokens.
+- **Bloque oscuro duplicado e idéntico** en `base.css`:
+  `:root[data-tema='oscuro']` (JS) y `@media (prefers-color-scheme:
+  dark) :root:not([data-tema])` (respaldo sin JS), con `color-scheme`
+  y contraste AA verificado (≥4.5:1 texto, ≥3:1 bordes de campo).
+- **`partials/header.php`**: meta `color-scheme: light dark`; script
+  con nonce que resuelve `localStorage['tw-tema']` (`auto|claro|oscuro`)
+  contra `prefers-color-scheme` **antes del primer pintado** (cero
+  destellos); botón `.theme-toggle` con SVG inline (sol/luna), oculto
+  sin JS.
+- **`js/main.js` → módulo del tema**: clic alterna y persiste;
+  `matchMedia` aplica cambios del sistema en `auto`; evento `storage`
+  sincroniza entre pestañas; `aria-pressed`/`aria-label` actualizados.
+- **Pruebas**: `estructura_test` suma la sección 9 (los dos bloques
+  oscuros deben ser idénticos, `color-scheme: dark` presente y todo
+  `var(--token)` definido); `http_test` verifica alternador, meta y
+  script anti-flash en la portada.
+- **Docs**: `DISENO.md` (sección "Modo oscuro / claro" con reglas para
+  agregar colores) y `MANUAL-DE-USUARIO.md` (cómo cambiar el tema).

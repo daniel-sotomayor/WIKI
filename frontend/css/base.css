@@ -9,6 +9,8 @@
    ============================================================ */
 
 :root {
+  color-scheme: light;
+
   /* ── Color ── */
   --navy:      #0B1F3A;
   --navy-mid:  #163050;
@@ -41,6 +43,36 @@
   --shadow-md: 0 4px 16px rgba(11,31,58,.13);
   --shadow-lg: 0 8px 32px rgba(11,31,58,.18);
 
+  /* ── Semánticos: son los que usan las vistas ──
+     En modo claro derivan de los materiales; en modo oscuro se
+     redefinen en el bloque [data-tema='oscuro'] de más abajo.
+     Regla: SIEMPRE usar éstos en las reglas nuevas; los materiales
+     (--navy, --gold…) sólo para superficies de marca fijas (footer,
+     barra superior, chips), que son oscuras en ambos temas. */
+  --heading:      var(--navy);        /* color de títulos y labels */
+  --bg:           var(--off-white);   /* fondo de página */
+  --surface:      var(--white);       /* tarjetas, inputs, paneles */
+  --surface-2:    var(--grey-100);    /* filas alternas, hover suave */
+  --border:       var(--grey-300);    /* bordes decorativos */
+  --field-border: var(--grey-300);    /* bordes de inputs (≥3:1) */
+  --code-bg:      var(--grey-100);    /* fondo de <code> */
+  --muted-strong: var(--grey-700);    /* texto secundario fuerte */
+  --link:         var(--blue-lt);     /* enlaces */
+  --focus-ring:   0 0 0 3px rgba(37,99,235,.15);
+
+  /* Semáforo: líneas de borde y estados sólidos */
+  --ok-line:      #22C55E;   --ok-solid:     #22C55E;
+  --warn-line:    #F59E0B;
+  --danger-line:  #EF4444;   --danger-solid: #EF4444;
+  --danger-deep:  #7F1D1D;
+  --info-line:    #3B82F6;
+  --gold-bg:      #FDF4E3;   --gold-line:    #F3E3BC;
+
+  /* Insignias de rol */
+  --role-admin-bg:      #FEF9C3;  --role-admin-fg:      #854D0E;
+  --role-supervisor-bg: #EDE9FE;  --role-supervisor-fg: #6D28D9;
+  --role-editor-bg:     #DBEAFE;  --role-editor-fg:     #1E40AF;
+
   /* ── Tipografía ── */
   --font-body:    system-ui, -apple-system, "Segoe UI", Roboto,
                   "Helvetica Neue", Arial, sans-serif;
@@ -50,6 +82,93 @@
                   Consolas, "Liberation Mono", monospace;
 
   --transition: 180ms ease;
+}
+
+/* ── Modo oscuro ─────────────────────────────────────────────
+   Dos bloques con EXACTAMENTE las mismas declaraciones:
+   · [data-tema='oscuro']  → lo aplica JS (preferencia elegida).
+   · @media (prefers-color-scheme: dark) sobre :root sin atributo →
+     funciona aunque JS esté deshabilitado o falle (sin parpadeo).
+   El test de estructura verifica que ambos bloques sean idénticos;
+   si agregás un token, agregalo en los DOS. */
+:root[data-tema='oscuro'] {
+  color-scheme: dark;
+
+  --white:     #16202E;
+  --off-white: #0E1520;
+  --grey-100:  #1E2A3A;
+  --grey-300:  #566E8C;
+  --grey-500:  #7E93B0;
+  --grey-700:  #B7C6DB;
+
+  --text:       #E6EDF7;
+  --text-muted: #9AAEC6;
+
+  --blue:    #2E6FC0;
+  --blue-lt: #7FB0FF;
+  --navy-mid: #2A5A9A;
+
+  --heading:      #F0F4FA;
+  --link:         #7FB0FF;
+  --focus-ring:   0 0 0 3px rgba(127,176,255,.30);
+
+  --ok-bg:     #0C2C1C;   --ok-fg:     #7CE0A6;
+  --warn-bg:   #3A2E0A;   --warn-fg:   #FCD34D;
+  --danger-bg: #3B1414;   --danger-fg: #FCA5A5;
+  --info-bg:   #12294D;   --info-fg:   #93C5FD;
+
+  --danger-solid: #DC2626;
+  --danger-deep:  #FECACA;
+  --gold-bg:      #3A2E0A;   --gold-line: #6B5416;
+
+  --role-admin-bg:      #3E3410;  --role-admin-fg:      #FDE68A;
+  --role-supervisor-bg: #2C2150;  --role-supervisor-fg: #C4B5FD;
+  --role-editor-bg:     #16325C;  --role-editor-fg:     #BFDBFE;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.40);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.50);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,.60);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema]) {
+    color-scheme: dark;
+
+    --white:     #16202E;
+    --off-white: #0E1520;
+    --grey-100:  #1E2A3A;
+    --grey-300:  #566E8C;
+    --grey-500:  #7E93B0;
+    --grey-700:  #B7C6DB;
+
+    --text:       #E6EDF7;
+    --text-muted: #9AAEC6;
+
+    --blue:    #2E6FC0;
+    --blue-lt: #7FB0FF;
+    --navy-mid: #2A5A9A;
+
+    --heading:      #F0F4FA;
+    --link:         #7FB0FF;
+    --focus-ring:   0 0 0 3px rgba(127,176,255,.30);
+
+    --ok-bg:     #0C2C1C;   --ok-fg:     #7CE0A6;
+    --warn-bg:   #3A2E0A;   --warn-fg:   #FCD34D;
+    --danger-bg: #3B1414;   --danger-fg: #FCA5A5;
+    --info-bg:   #12294D;   --info-fg:   #93C5FD;
+
+    --danger-solid: #DC2626;
+    --danger-deep:  #FECACA;
+    --gold-bg:      #3A2E0A;   --gold-line: #6B5416;
+
+    --role-admin-bg:      #3E3410;  --role-admin-fg:      #FDE68A;
+    --role-supervisor-bg: #2C2150;  --role-supervisor-fg: #C4B5FD;
+    --role-editor-bg:     #16325C;  --role-editor-fg:     #BFDBFE;
+
+    --shadow-sm: 0 1px 3px rgba(0,0,0,.40);
+    --shadow-md: 0 4px 16px rgba(0,0,0,.50);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,.60);
+  }
 }
 
 /* ── Reset ─────────────────────────────────────────────────── */
@@ -75,12 +194,12 @@ a:hover { color: var(--gold); }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
-  color: var(--navy);
+  color: var(--heading);
   line-height: 1.25;
 }
 
 code, kbd, pre { font-family: var(--font-mono); font-size: .9em; }
-code { background: var(--grey-100); padding: .1em .4em; border-radius: 4px; }
+code { background: var(--code-bg); padding: .1em .4em; border-radius: 4px; }
 
 /* Foco visible siempre (accesibilidad WCAG 2.4.7) */
 :focus-visible {
@@ -160,10 +279,10 @@ code { background: var(--grey-100); padding: .1em .4em; border-radius: 4px; }
 }
 .alert ul { padding-left: 1.1rem; list-style: disc; }
 .alert li { margin: .15rem 0; }
-.alert-danger  { background: var(--danger-bg); color: var(--danger-fg); border-color: #EF4444; }
-.alert-success { background: var(--ok-bg);     color: var(--ok-fg);     border-color: #22C55E; }
-.alert-info    { background: var(--info-bg);   color: var(--info-fg);   border-color: #3B82F6; }
-.alert-warning { background: var(--warn-bg);   color: var(--warn-fg);   border-color: #F59E0B; }
+.alert-danger  { background: var(--danger-bg); color: var(--danger-fg); border-color: var(--danger-line); }
+.alert-success { background: var(--ok-bg);     color: var(--ok-fg);     border-color: var(--ok-line); }
+.alert-info    { background: var(--info-bg);   color: var(--info-fg);   border-color: var(--info-line); }
+.alert-warning { background: var(--warn-bg);   color: var(--warn-fg);   border-color: var(--warn-line); }
 
 /* ── Insignias de estado y rol ────────────────────────────── */
 
@@ -196,9 +315,9 @@ code { background: var(--grey-100); padding: .1em .4em; border-radius: 4px; }
   letter-spacing: .05em;
   white-space: nowrap;
 }
-.role-admin      { background: #FEF9C3; color: #854D0E; }
-.role-supervisor { background: #EDE9FE; color: #6D28D9; }
-.role-editor     { background: #DBEAFE; color: #1E40AF; }
+.role-admin      { background: var(--role-admin-bg);      color: var(--role-admin-fg); }
+.role-supervisor { background: var(--role-supervisor-bg); color: var(--role-supervisor-fg); }
+.role-editor     { background: var(--role-editor-bg);     color: var(--role-editor-fg); }
 .role-lector     { background: var(--grey-100); color: var(--grey-700); }
 
 /* ── Chips (categorías, etiquetas, contadores) ─────────────── */
@@ -216,7 +335,7 @@ code { background: var(--grey-100); padding: .1em .4em; border-radius: 4px; }
 }
 .chip--cat        { background: var(--info-bg);  color: var(--info-fg); text-transform: uppercase; }
 .chip--tag        { background: var(--grey-100); color: var(--grey-700); text-transform: lowercase; }
-.chip--tipo       { background: #FDF4E3;         color: var(--gold); text-transform: uppercase; }
+.chip--tipo       { background: var(--gold-bg);  color: var(--gold); text-transform: uppercase; }
 .chip--version    { background: var(--navy);     color: var(--gold-lt); }
 .chip--destacada  { background: var(--gold);     color: var(--navy); }
 .chip--aviso      { background: var(--warn-bg);  color: var(--warn-fg); }
