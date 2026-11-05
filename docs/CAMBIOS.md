@@ -259,3 +259,16 @@ según el rol del lector) y `README.md` (tabla de documentación).
   script anti-flash en la portada.
 - **Docs**: `DISENO.md` (sección "Modo oscuro / claro" con reglas para
   agregar colores) y `MANUAL-DE-USUARIO.md` (cómo cambiar el tema).
+
+## Documento integral del sistema (2026-11-05)
+
+- `docs/VISTA-GENERAL-DEL-SISTEMA.md`: documento único para conocer
+  el proyecto a fondo — qué resuelve, stack y versiones (PHP 8.1–8.4,
+  MySQL/MariaDB, HTML/CSS/JS vanilla, PHPMailer v7.1.1, por qué no hay
+  frameworks), arquitectura y flujo de petición, configuración
+  completa (archivos, variables de entorno, `config_sitio`, CSP,
+  límites), modelo de datos resumido, roles/capacidades, seguridad,
+  diseño y modo oscuro, los 6 flujos principales, pruebas, operación,
+  10 convenciones del equipo, mapa "dónde está cada cosa" e índice con
+  ruta de lectura sugerida para integrantes nuevos.
+- Enlazado desde `LEEME.md` y `README.md`.

@@ -31,6 +31,7 @@ Stack: **PHP 8.1+ · MySQL/MariaDB · HTML5 · CSS3 · JavaScript puro**
 | Documento | Contenido |
 |---|---|
 | [`LEEME.md`](LEEME.md) | Este manual: instalación, uso y solución de problemas |
+| [`VISTA-GENERAL-DEL-SISTEMA.md`](VISTA-GENERAL-DEL-SISTEMA.md) | El sistema a fondo: tecnologías, arquitectura, configuración, BD, seguridad y operación en un solo documento |
 | [`MANUAL-DE-USUARIO.md`](MANUAL-DE-USUARIO.md) | Qué hace cada pantalla, flujos (moderación, versiones) y recetas rápidas |
 | [`ARQUITECTURA.md`](ARQUITECTURA.md) | Capas, flujo de una petición, módulos y decisiones de diseño |
 | [`GUIA-DESARROLLADOR.md`](GUIA-DESARROLLADOR.md) | Convenciones, recetas para extender el código y checklist de entrega |

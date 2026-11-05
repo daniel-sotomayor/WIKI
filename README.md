@@ -46,6 +46,7 @@ Toda la documentación vive en [`docs/`](docs/):
 | Documento | Contenido |
 |---|---|
 | [`LEEME.md`](docs/LEEME.md) | Guía general de uso e instalación |
+| [`VISTA-GENERAL-DEL-SISTEMA.md`](docs/VISTA-GENERAL-DEL-SISTEMA.md) | El sistema a fondo (para conocerlo completo) |
 | [`MANUAL-DE-USUARIO.md`](docs/MANUAL-DE-USUARIO.md) | Pantallas, flujos y recetas para usar el sistema |
 | [`ARQUITECTURA.md`](docs/ARQUITECTURA.md) | Capas, flujo de petición, módulos |
 | [`GUIA-DESARROLLADOR.md`](docs/GUIA-DESARROLLADOR.md) | Convenciones, recetas para extender y checklist |
