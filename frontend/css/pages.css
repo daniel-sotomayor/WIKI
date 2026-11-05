@@ -107,10 +107,13 @@
 /* ── Rejillas de tarjetas ─────────────────────────────────── */
 
 .grid { display: grid; gap: 1.4rem; }
-.grid--proyectos { grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }
-.grid--articulos { grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); }
-.grid--noticias  { grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); }
-.grid--destacada { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); margin-bottom: 1.75rem; }
+/* min(…,100%): en pantallas angostas (320–375px) el ancho mínimo
+   nunca supera al contenedor y la rejilla baja a 1 columna sin
+   generar scroll horizontal. */
+.grid--proyectos { grid-template-columns: repeat(auto-fill, minmax(min(290px, 100%), 1fr)); }
+.grid--articulos { grid-template-columns: repeat(auto-fill, minmax(min(255px, 100%), 1fr)); }
+.grid--noticias  { grid-template-columns: repeat(auto-fill, minmax(min(310px, 100%), 1fr)); }
+.grid--destacada { grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr)); margin-bottom: 1.75rem; }
 
 /* ── Fichas de datos (dl) ─────────────────────────────────── */
 

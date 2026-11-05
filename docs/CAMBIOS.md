@@ -301,3 +301,24 @@ según el rol del lector) y `README.md` (tabla de documentación).
   documentos + "por dónde empezar" con rutas por rol y defensa) y
   `docs/VISTA-GENERAL-DEL-SISTEMA.md` (índice completo + ruta para
   integrantes nuevos).
+
+## Auditoría responsive (2026-11-05)
+
+Revisión de breakpoints, rejillas, desbordes y tablas (5 hojas CSS):
+
+- **Cabecera en móvil (≤600px)**: con sesión abierta la fila
+  `logo + hamburguesa + badge + Mi cuenta + Panel + Salir` desbordaba
+  en 320–375px. Ahora `.site-header__inner` hace `flex-wrap` (fila 1:
+  logo + hamburguesa a la derecha; fila 2: acciones alineadas a la
+  derecha), botones compactos, `gap .3rem` y `.user-badge` oculto
+  (el rol sigue visible en Mi cuenta/Panel).
+- **Rejillas de tarjetas**: `grid--proyectos/--noticias/--destacada`
+  usaban `minmax(290/310/340px, …)`; en 320px (272px útiles) el ancho
+  mínimo superaba al contenedor y forzaba scroll horizontal. Se pasó
+  a `minmax(min(Xpx, 100%), 1fr)`: baja a 1 columna sin desbordar y
+  conserva varias columnas cuando caben.
+- **Verificado sin cambios**: tablas (ya envueltas en
+  `.tabla-envoltura { overflow-x: auto }`), `.hero-stats` (ya con
+  `flex-wrap`), `.filtros` (ya con `flex-wrap`), rejillas `auto-fit`
+  de base/galería (`minmax ≤260px`) y breakpoints 960/700/600.
+- **Suite 4/4 en verde** tras los cambios.

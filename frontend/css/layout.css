@@ -240,6 +240,22 @@ html[data-tema-pref='oscuro'] .theme-toggle { border-color: var(--blue-lt); }
 @media (max-width: 600px) {
   .bar-top__derecha { display: none; }
   .logo-sub { display: none; }
+
+  /* Cabecera en dos filas: logo + hamburguesa arriba, acciones
+     debajo alineadas a la derecha (evita el desborde con sesión
+     abierta: badge + Mi cuenta + Panel + Salir). */
+  .site-header__inner { flex-wrap: wrap; }
+  .nav-toggle { margin-left: auto; }
+  .site-header__actions {
+    width: 100%;
+    margin-left: 0;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: .3rem;
+  }
+  .site-header__actions .btn { padding: .35rem .6rem; font-size: .78rem; }
+  .user-badge { display: none; }
+
   .footer-grid { grid-template-columns: 1fr; gap: 1.75rem; }
   .main-content { padding: 1.5rem 0 3rem; }
 }
