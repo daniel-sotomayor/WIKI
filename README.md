@@ -48,6 +48,10 @@ Toda la documentación vive en [`docs/`](docs/):
 | [`LEEME.md`](docs/LEEME.md) | Guía general de uso e instalación |
 | [`VISTA-GENERAL-DEL-SISTEMA.md`](docs/VISTA-GENERAL-DEL-SISTEMA.md) | El sistema a fondo (para conocerlo completo) |
 | [`MANUAL-DE-USUARIO.md`](docs/MANUAL-DE-USUARIO.md) | Pantallas, flujos y recetas para usar el sistema |
+| [`MANUAL-VISITANTE.md`](docs/MANUAL-VISITANTE.md) | Manual por rol: consulta pública |
+| [`MANUAL-EDITOR.md`](docs/MANUAL-EDITOR.md) | Manual por rol: proyectos, artículos, versiones y moderación |
+| [`MANUAL-ADMINISTRADOR.md`](docs/MANUAL-ADMINISTRADOR.md) | Manual por rol: usuarios, bitácora, diagnóstico y mantenimiento |
+| [`DEFENSA-DEL-PROYECTO.md`](docs/DEFENSA-DEL-PROYECTO.md) | Documento de defensa: objetivos, decisiones, métricas y preguntas del tribunal |
 | [`ARQUITECTURA.md`](docs/ARQUITECTURA.md) | Capas, flujo de petición, módulos |
 | [`GUIA-DESARROLLADOR.md`](docs/GUIA-DESARROLLADOR.md) | Convenciones, recetas para extender y checklist |
 | [`DISENO.md`](docs/DISENO.md) | Tokens, componentes, responsive, accesibilidad |

@@ -400,6 +400,10 @@ Pasos completos y troubleshooting: [`OPERACION.md`](OPERACION.md).
 | [`LEEME.md`](LEEME.md) | Instalación, requisitos, troubleshooting |
 | [`VISTA-GENERAL-DEL-SISTEMA.md`](VISTA-GENERAL-DEL-SISTEMA.md) | Este documento |
 | [`MANUAL-DE-USUARIO.md`](MANUAL-DE-USUARIO.md) | Pantallas, flujos y recetas de uso |
+| [`MANUAL-VISITANTE.md`](MANUAL-VISITANTE.md) | Manual por rol: consulta pública |
+| [`MANUAL-EDITOR.md`](MANUAL-EDITOR.md) | Manual por rol: proyectos, artículos, versiones, moderación |
+| [`MANUAL-ADMINISTRADOR.md`](MANUAL-ADMINISTRADOR.md) | Manual por rol: usuarios, bitácora, diagnóstico, mantenimiento |
+| [`DEFENSA-DEL-PROYECTO.md`](DEFENSA-DEL-PROYECTO.md) | Documento de defensa: objetivos, métricas, preguntas del tribunal, demo |
 | [`ARQUITECTURA.md`](ARQUITECTURA.md) | Capas, flujo de petición, módulos, decisiones |
 | [`GUIA-DESARROLLADOR.md`](GUIA-DESARROLLADOR.md) | Convenciones, recetas para extender, checklist |
 | [`DISENO.md`](DISENO.md) | Tokens, componentes, responsive, accesibilidad, modo oscuro |
@@ -413,6 +417,9 @@ Pasos completos y troubleshooting: [`OPERACION.md`](OPERACION.md).
 | [`CAMBIOS.md`](CAMBIOS.md) | Historial de desarrollo y verificaciones |
 
 **Ruta sugerida para un integrante nuevo**: 1) este documento →
-2) `LEEME.md` instalando una copia → 3) `MANUAL-DE-USUARIO.md` usando
-el sistema con las 4 cuentas → 4) `GUIA-DESARROLLADOR.md` + `CODIGO.md`
-antes de escribir código → 5) `DIAGRAMAS.md` para el panorama completo.
+2) `LEEME.md` instalando una copia → 3) tu manual por rol
+(`MANUAL-VISITANTE.md` / `MANUAL-EDITOR.md` /
+`MANUAL-ADMINISTRADOR.md`) usando el sistema con las 4 cuentas →
+4) `GUIA-DESARROLLADOR.md` + `CODIGO.md` antes de escribir código →
+5) `DIAGRAMAS.md` para el panorama completo. Para exponer el proyecto
+→ `DEFENSA-DEL-PROYECTO.md`.

@@ -33,6 +33,10 @@ Stack: **PHP 8.1+ · MySQL/MariaDB · HTML5 · CSS3 · JavaScript puro**
 | [`LEEME.md`](LEEME.md) | Este manual: instalación, uso y solución de problemas |
 | [`VISTA-GENERAL-DEL-SISTEMA.md`](VISTA-GENERAL-DEL-SISTEMA.md) | El sistema a fondo: tecnologías, arquitectura, configuración, BD, seguridad y operación en un solo documento |
 | [`MANUAL-DE-USUARIO.md`](MANUAL-DE-USUARIO.md) | Qué hace cada pantalla, flujos (moderación, versiones) y recetas rápidas |
+| [`MANUAL-VISITANTE.md`](MANUAL-VISITANTE.md) | Manual por rol: consulta pública (wiki, proyectos, noticias, contacto) |
+| [`MANUAL-EDITOR.md`](MANUAL-EDITOR.md) | Manual por rol: crear proyectos/artículos, versiones, archivos y notificar (editor y supervisor) |
+| [`MANUAL-ADMINISTRADOR.md`](MANUAL-ADMINISTRADOR.md) | Manual por rol: usuarios, moderación total, bitácora, diagnóstico y mantenimiento |
+| [`DEFENSA-DEL-PROYECTO.md`](DEFENSA-DEL-PROYECTO.md) | Documento de defensa: problema, objetivos, decisiones, métricas, preguntas del tribunal y guía de demo |
 | [`ARQUITECTURA.md`](ARQUITECTURA.md) | Capas, flujo de una petición, módulos y decisiones de diseño |
 | [`GUIA-DESARROLLADOR.md`](GUIA-DESARROLLADOR.md) | Convenciones, recetas para extender el código y checklist de entrega |
 | [`DISENO.md`](DISENO.md) | Sistema de diseño: tokens, componentes, responsive y accesibilidad |
@@ -46,9 +50,13 @@ Stack: **PHP 8.1+ · MySQL/MariaDB · HTML5 · CSS3 · JavaScript puro**
 | [`CAMBIOS.md`](CAMBIOS.md) | Historial de desarrollo y verificaciones |
 
 **Por dónde empezar**: si vas a *usar* el sistema →
-[`MANUAL-DE-USUARIO.md`](MANUAL-DE-USUARIO.md); si vas a *instalarlo* →
+[`MANUAL-DE-USUARIO.md`](MANUAL-DE-USUARIO.md) o tu manual por rol
+([visitante](MANUAL-VISITANTE.md) ·
+[editor/supervisor](MANUAL-EDITOR.md) ·
+[administrador](MANUAL-ADMINISTRADOR.md)); si vas a *instalarlo* →
 sigue éste; si vas a *programar* →
-[`GUIA-DESARROLLADOR.md`](GUIA-DESARROLLADOR.md).
+[`GUIA-DESARROLLADOR.md`](GUIA-DESARROLLADOR.md); si vas a *exponer o
+defender* el proyecto → [`DEFENSA-DEL-PROYECTO.md`](DEFENSA-DEL-PROYECTO.md).
 
 ---
 

@@ -272,3 +272,32 @@ según el rol del lector) y `README.md` (tabla de documentación).
   10 convenciones del equipo, mapa "dónde está cada cosa" e índice con
   ruta de lectura sugerida para integrantes nuevos.
 - Enlazado desde `LEEME.md` y `README.md`.
+
+## Documento de defensa y manuales por rol (2026-11-05)
+
+- `docs/DEFENSA-DEL-PROYECTO.md`: material completo para exponer y
+  defender el proyecto — presentación de 60 segundos, problema y
+  justificación, objetivos, alcance, metodología por fases, decisiones
+  tecnológicas con justificación, arquitectura, modelo de datos,
+  13 demos con sus rutas, tabla de amenazas vs medidas de seguridad,
+  verificación con métricas reales (50 archivos PHP ≈9.300 líneas,
+  1.987 líneas de CSS, 479 de JS, 14 tablas + 4 vistas, 96 helpers,
+  4 suites en verde), conclusiones, trabajo futuro, **13 preguntas
+  probables del tribunal con respuestas** y guía del examen práctico
+  paso a paso.
+- **Manuales de usuario por rol** (además del general
+  `MANUAL-DE-USUARIO.md`):
+  - `MANUAL-VISITANTE.md`: navegación pública, búsqueda en la wiki,
+    ficha de proyecto, contacto y solución de problemas sin sesión.
+  - `MANUAL-EDITOR.md`: alta de proyectos/hitos, artículos con
+    plantillas y versionado (historial/restaurar), adjuntos con
+    límites por tipo, flujo de noticias para editor y funciones extra
+    del supervisor (moderación con aprobar/rechazar+motivo).
+  - `MANUAL-ADMINISTRADOR.md`: usuarios y roles jerárquicos,
+    borrados totales, mensajes de contacto, bitácora de seguridad,
+    diagnóstico, modo mantenimiento, respaldos/migraciones y
+    checklist mensual.
+- Índices actualizados: `README.md`, `docs/LEEME.md` (tabla de 18
+  documentos + "por dónde empezar" con rutas por rol y defensa) y
+  `docs/VISTA-GENERAL-DEL-SISTEMA.md` (índice completo + ruta para
+  integrantes nuevos).
