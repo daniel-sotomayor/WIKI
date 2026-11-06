@@ -22,8 +22,10 @@
 //                            .htaccess + endpoint + carpeta misma)
 //      datos               → sólo BD + archivos subidos/respaldos
 //
-//  La clave vive en backend/config/clave_secreta.php (fuera de
-//  git) o en la variable de entorno CLAVE_DESTRUCCION.
+//  La clave se resuelve en este orden: variable de entorno
+//  CLAVE_DESTRUCCION, luego backend/config/clave_secreta.php
+//  (fuera de git) y si falta, el valor por defecto del sistema
+//  (backend/config/config.php).
 //  Ver docs/SEGURIDAD.md §5.
 // ============================================================
 

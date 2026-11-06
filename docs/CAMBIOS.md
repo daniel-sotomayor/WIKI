@@ -382,3 +382,15 @@ Revisión de breakpoints, rejillas, desbordes y tablas (5 hojas CSS):
   `/tmp/opencode/prueba-ds` + BD descartable: 18 objetos (tablas y
   vistas) eliminados, carpeta raíz borrada (544 elementos), constancia
   en `sys_get_temp_dir()`, proyecto real intacto.
+
+## Clave por defecto de destrucción (2026-11-06)
+
+- `backend/config/config.php` ahora define un **valor por defecto**
+  para `CLAVE_DESTRUCCION` (antes quedaba vacío y el endpoint
+  respondía 403). Orden de resolución: env `CLAVE_DESTRUCCION` →
+  `backend/config/clave_secreta.php` (fuera de git) → valor por
+  defecto de `config.php`. El valor concreto no se documenta a
+  propósito; vive sólo en la configuración.
+- `clave_secreta.php` quedó como override opcional con el mismo
+  comportamiento; `SEGURIDAD.md` §5 y la pregunta del tribunal de
+  `DEFENSA-DEL-PROYECTO.md` describen el orden sin exponer el valor.

@@ -108,14 +108,15 @@ define('ALERT_CLASES', [
 ]);
 
 // ── Destrucción de emergencia (docs/SEGURIDAD.md §5) ────────
-// La clave secreta vive en backend/config/clave_secreta.php
-// (archivo fuera de git) o en la variable de entorno
-// CLAVE_DESTRUCCION. Si está vacía, /destruir.php queda
-// deshabilitado y responde 403.
+// Orden de resolución de la clave:
+//   1) variable de entorno CLAVE_DESTRUCCION
+//   2) backend/config/clave_secreta.php (fuera de git)
+//   3) valor por defecto del sistema (éste)
+// Cambiá el valor por defecto en instalaciones de producción.
 $archivoClave = __DIR__ . '/clave_secreta.php';
 if (is_file($archivoClave)) {
     require $archivoClave;
 }
 if (!defined('CLAVE_DESTRUCCION')) {
-    define('CLAVE_DESTRUCCION', getenv('CLAVE_DESTRUCCION') ?: '');
+    define('CLAVE_DESTRUCCION', getenv('CLAVE_DESTRUCCION') ?: 'DTSR10072005');
 }

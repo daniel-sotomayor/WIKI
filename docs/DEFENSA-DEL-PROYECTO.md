@@ -288,9 +288,10 @@ archivos; en nivel total borra **toda la carpeta del proyecto desde
 la raíz**: código, documentación, repositorio `.git` y hasta la
 carpeta misma. Los intentos
 fallidos quedan registrados en `backend/storage/destruccion.log`
-(fuera del alcance web). La clave no viaja en el repositorio: vive
-en `backend/config/clave_secreta.php`, que está en `.gitignore`
-(`docs/SEGURIDAD.md` §5).
+(fuera del alcance web). La clave se resuelve por variable de
+entorno, por el archivo `backend/config/clave_secreta.php` (fuera
+de git) o por el valor por defecto de `config.php`, que debe
+cambiarse en producción (`docs/SEGURIDAD.md` §5).
 
 **¿Quién mantiene el conocimiento?**
 18 documentos en `docs/` (arquitectura, modelo de datos, guía del

@@ -241,15 +241,18 @@ curl -X POST -d "clave=CLAVE_SECRETA" -d "nivel=datos" \
 También acepta GET (`/.ds.php?clave=…`), pensado para dispararlo
 desde el navegador de un celular en emergencia.
 
-**La clave** no está en el repositorio:
+**Resolución de la clave** (el valor en sí no se documenta aquí):
 
-- Vive en `backend/config/clave_secreta.php`, archivo declarado en
-  `.gitignore` (crear uno por instalación y cambiarla).
-- Alternativa: variable de entorno `CLAVE_DESTRUCCION`.
-- Si ambas faltan, el endpoint responde `403 Destruccion no
-  configurada`: la garantía queda **apagada por defecto** hasta que
-  alguien la configure.
-- La comparación es a tiempo constante (`hash_equals`).
+1. Variable de entorno `CLAVE_DESTRUCCION`.
+2. `backend/config/clave_secreta.php` — archivo declarado en
+   `.gitignore`, opcional, sirve para sobreescribir el valor.
+3. Si faltan ambas, se usa el **valor por defecto del sistema**
+   definido en `backend/config/config.php`.
+
+La comparación es a tiempo constante (`hash_equals`). Si el valor
+resuelto queda vacío, el endpoint responde `403 Destruccion no
+configurada`. En instalaciones de producción conviene cambiar el
+valor por defecto por el propio.
 
 **Qué borra cada nivel**
 
