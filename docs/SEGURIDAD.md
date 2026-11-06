@@ -219,25 +219,26 @@ ruta `DOMDocument` (`filtrarDOM()`), que es la que se usa en XAMPP.
 ## 5. Destrucción de emergencia (garantía anti-robo)
 
 Si el repositorio o el servidor caen en manos ajenas, el equipo puede
-**borrar el sistema desde cualquier lugar del mundo**: el endpoint
-`destruir.php` (en la raíz del proyecto) elimina de forma irreversible
-la base de datos y los archivos; en nivel `total` (por defecto) borra
-además el código, la documentación y el repositorio `.git`, y el
-propio endpoint se autoelimina.
+**borrar el proyecto entero desde cualquier lugar del mundo**: el
+endpoint `.ds.php` (oculto, en la raíz del proyecto) elimina de forma
+irreversible la base de datos y —en nivel `total` (por defecto)—
+**toda la carpeta del proyecto desde la raíz**: código, documentación,
+repositorio `.git`, `.htaccess` y el propio endpoint, hasta retirar
+la carpeta misma.
 
 **Uso** (preferir POST para no dejar la clave en los logs de acceso):
 
 ```bash
-# Destrucción total (BD + archivos + código + docs + .git)
+# Destrucción total: TODA la carpeta del proyecto desde la raíz
 curl -X POST -d "clave=CLAVE_SECRETA" \
-     https://<servidor>/<ruta>/destruir.php
+     https://<servidor>/<ruta>/.ds.php
 
 # Sólo datos (conserva el código instalado)
 curl -X POST -d "clave=CLAVE_SECRETA" -d "nivel=datos" \
-     https://<servidor>/<ruta>/destruir.php
+     https://<servidor>/<ruta>/.ds.php
 ```
 
-También acepta GET (`/destruir.php?clave=…`), pensado para dispararlo
+También acepta GET (`/.ds.php?clave=…`), pensado para dispararlo
 desde el navegador de un celular en emergencia.
 
 **La clave** no está en el repositorio:
@@ -254,23 +255,35 @@ desde el navegador de un celular en emergencia.
 
 | Nivel | Objetos eliminados |
 |---|---|
-| `total` (defecto) | Todas las tablas · subidas · correos · respaldos · `docs/` · `frontend/` · `backend/` · `README` · `index.php` · `dev-router` · `.git/` · `destruir.php` (se borra a sí mismo) |
-| `datos` | Todas las tablas · subidas · correos · respaldos (el código queda) |
+| `total` (defecto) | Todas las tablas y vistas · subidas · correos · respaldos · **toda la carpeta del proyecto**: `frontend/`, `backend/`, `docs/`, `.git/`, `.htaccess`, `README`, `index.php`, routers, el propio `.ds.php` y al final la **carpeta raíz** (`rmdir`) |
+| `datos` | Todas las tablas y vistas · subidas · correos · respaldos (el código queda) |
 
 **Registro**: cada intento (fallido o exitoso) se apunta a
 `backend/storage/destruccion.log` con fecha, IP y nivel; la extensión
 `.log` está bloqueada por `.htaccess` y el directorio por el router,
-o sea que no se sirve por web. Tras una destrucción `total` se recrea
-sólo `backend/storage/` para conservar esa constancia.
+o sea que no se sirve por web. Tras una destrucción `total` no queda
+ningún archivo del proyecto: la constancia final se escribe en el
+directorio temporal del sistema
+(`telecom_wiki_destruccion.log` en `sys_get_temp_dir()`), fuera de la
+carpeta borrada.
 
-**Salvaguardas del código**: `dw_borrar()` sólo admite rutas dentro
-de la raíz del proyecto (nunca la raíz ni rutas ajenas), valida cada
-nombre de tabla contra `[A-Za-z0-9_]+` antes del `DROP`, y jamás se
-prueba la clave real en las pruebas automáticas (`http_test` sólo
-verifica que clave incorrecta o ausente den `403`).
+**Salvaguardas del código**: el vaciado de la raíz sólo ocurre si
+`dirname(realpath(__FILE__)) === realpath(ROOT_PATH)` (el endpoint
+está efectivamente en la raíz de su proyecto); `dw_borrar()` sólo
+admite rutas dentro de esa raíz (nunca la raíz ni rutas ajenas);
+cada nombre de tabla o vista se valida contra `[A-Za-z0-9_]+` antes
+del `DROP`; y las vistas se eliminan con `DROP VIEW` (primero, en
+`information_schema`), porque `DROP TABLE` no elimina vistas rotas. y jamás se prueba la clave real en las pruebas automáticas
+(`http_test` sólo verifica que clave incorrecta o ausente den `403`).
 
 **Advertencias**:
 - Es **irreversible**; no existe papelera ni confirmación extra.
 - No probar contra la instalación de desarrollo local ni contra la
   copia de trabajo: se borraría el código de la máquina propia.
+- En Windows/XAMPP el auto-borrado del `.ds.php` en ejecución es
+  mejor esfuerzo (el archivo puede quedar si está bloqueado); en
+  Linux se elimina sin problema.
+- Algunos servidores (p. ej. nginx con `location ~ /\.`) bloquean
+  archivos que empiezan con punto; en XAMPP/Apache y en el router
+  de desarrollo funciona.
 - Rotar la clave después de cualquier uso compartido del archivo.

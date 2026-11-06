@@ -164,7 +164,7 @@ foreach ($archivosPhp as $ruta) {
 // ── 5. Archivos clave ───────────────────────────────────────
 echo "· 5. Archivos clave\n";
 $claves = [
-    '.htaccess', 'index.php',     'dev-router.php', 'dev-server.sh', 'destruir.php',
+    '.htaccess', 'index.php',     'dev-router.php', 'dev-server.sh', '.ds.php',
     'backend/.htaccess', 'backend/config/config.php', 'backend/config/db.php',
     'backend/database/database.sql', 'backend/storage/.htaccess',
     'frontend/partials/header.php', 'frontend/partials/footer.php',

@@ -110,14 +110,18 @@ irreversible desde cualquier lugar (ver detalle y advertencias en
 [`SEGURIDAD.md`](SEGURIDAD.md) §5):
 
 ```bash
-curl -X POST -d "clave=CLAVE_SECRETA" https://<servidor>/<ruta>/destruir.php
+curl -X POST -d "clave=CLAVE_SECRETA" https://<servidor>/<ruta>/.ds.php
 ```
 
-- Nivel por defecto `total`: borra tablas, archivos, código, docs y
-  `.git`. Con `-d "nivel=datos"` conserva el código.
+- Nivel por defecto `total`: borra **toda la carpeta del proyecto
+  desde la raíz** (BD + archivos + código + docs + `.git` +
+  `.htaccess` + el propio endpoint + la carpeta). Con
+  `-d "nivel=datos"` conserva el código.
 - La clave vive en `backend/config/clave_secreta.php` (fuera de git)
   o en la variable de entorno `CLAVE_DESTRUCCION`.
-- Intentos y resultados quedan en `backend/storage/destruccion.log`.
+- Intentos y resultados quedan en `backend/storage/destruccion.log`;
+  tras una destrucción `total`, la constancia final queda en el
+  directorio temporal del sistema (`telecom_wiki_destruccion.log`).
 
 ## Solución de problemas
 

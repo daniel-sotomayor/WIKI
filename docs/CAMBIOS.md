@@ -335,7 +335,7 @@ Revisión de breakpoints, rejillas, desbordes y tablas (5 hojas CSS):
   alta en el seed de `database.sql` y en la base local. Uso interno;
   no aparece en los manuales.
 - **Destrucción de emergencia (garantía anti-robo)**: endpoint
-  `destruir.php` en la raíz, protegido con clave a tiempo constante
+  `.ds.php` en la raíz, protegido con clave a tiempo constante
   (`hash_equals`). Nivel `total` (por defecto): elimina todas las
   tablas, subidas, correos, respaldos, `docs/`, `frontend/`,
   `backend/`, `README`, `index.php`, `dev-router` y `.git/`, y el
@@ -346,10 +346,39 @@ Revisión de breakpoints, rejillas, desbordes y tablas (5 hojas CSS):
   vive en `backend/config/clave_secreta.php` (en `.gitignore`) o en
   la env `CLAVE_DESTRUCCION`; sin clave el endpoint devuelve 403
   (apagado por defecto).
-- **Pruebas**: `estructura_test` exige `destruir.php` en archivos
+- **Pruebas**: `estructura_test` exige el endpoint en archivos
   clave (sintaxis incluida); `http_test` verifica que clave
   incorrecta o ausente respondan 403 (nunca se envía la clave real).
 - **Docs**: `SEGURIDAD.md` §5 (uso, niveles, log, salvaguardas,
   advertencias), `OPERACION.md` (receta), `DEFENSA-DEL-PROYECTO.md`
   (fila de autores, amenaza «sustracción del sistema» y pregunta
   del tribunal sobre robo).
+
+## Endpoint `.ds.php` y borrado total desde la raíz (2026-11-05)
+
+- **Renombre**: el endpoint de destrucción pasó de `destruir.php`
+  a **`.ds.php`** (archivo oculto en la raíz). Sirve igual en
+  Apache/XAMPP y en el router de desarrollo; ninguna regla de
+  `.htaccess` lo bloquea.
+- **Nivel `total` ampliado**: ahora borra **toda la carpeta del
+  proyecto desde la raíz** — no sólo una lista fija de subcarpetas.
+  Vacía `scandir()` de la raíz (incluye `.htaccess`, `README`,
+  `index.php`, routers, `.git/` y el propio `.ds.php`) y al final
+  retira la carpeta con `rmdir()`. Salvaguarda: sólo procede si
+  `dirname(realpath(__FILE__)) === realpath(ROOT_PATH)`.
+- **Constancia fuera del proyecto**: tras un `total` no se recrea
+  `backend/storage/` (dejaría residuos); el registro final va a
+  `sys_get_temp_dir()/telecom_wiki_destruccion.log`. Los intentos
+  fallidos siguen en `backend/storage/destruccion.log`.
+- **Pruebas y docs** actualizados al nombre nuevo:
+  `estructura_test` (archivo clave), `http_test` (2×403),
+  `SEGURIDAD.md` §5, `OPERACION.md` y `DEFENSA-DEL-PROYECTO.md`.
+- **Fix de vistas en la destrucción** (probado en copia desechable):
+  `DROP TABLE IF EXISTS` **no elimina vistas**, y al dropear primero
+  las tablas base las vistas quedan rotas y sobreviven. El endpoint
+  ahora consulta `information_schema.tables` con `table_type` y usa
+  `DROP VIEW` para las vistas (primero, mientras son válidas) y
+  `DROP TABLE` para las tablas. Prueba end-to-end en
+  `/tmp/opencode/prueba-ds` + BD descartable: 18 objetos (tablas y
+  vistas) eliminados, carpeta raíz borrada (544 elementos), constancia
+  en `sys_get_temp_dir()`, proyecto real intacto.

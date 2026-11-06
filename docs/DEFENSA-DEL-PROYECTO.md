@@ -165,7 +165,7 @@ estados de noticia (`docs/DIAGRAMAS.md` + 11 SVG exportados).
 | Escalada de roles | Matriz única `CAPACIDADES` + guards; edición propia restringida |
 | Sesión | Cookies `HttpOnly`+`SameSite`, regeneración periódica, expiración 30 min/8 h |
 | Exposición de archivos | `.htaccess` ×4 + router de desarrollo equivalente |
-| Sustracción del sistema | **Destrucción remota de emergencia** (`destruir.php` + clave secreta): borra BD, archivos y —en nivel total— el código y el repositorio |
+| Sustracción del sistema | **Destrucción remota de emergencia** (`.ds.php` + clave secreta): borra BD, archivos y —en nivel total— **toda la carpeta del proyecto desde la raíz** (código, docs, `.git`, carpeta incluida) |
 
 ## 11. Verificación y métricas
 
@@ -281,10 +281,12 @@ Tres pasos: copiar la carpeta a `htdocs/`, importar
 
 **¿Qué pasa si se roba el código o el servidor?**
 El sistema incluye una garantía anti-robo: el endpoint
-`destruir.php`, protegido por una clave secreta que se envía desde
-cualquier lugar (POST con `curl` o desde el navegador), elimina de
-irreversible la base de datos y los archivos; en nivel total borra
-también el código, la documentación y el repositorio. Los intentos
+`.ds.php` (oculto, en la raíz), protegido por una clave secreta que
+se envía desde cualquier lugar (POST con `curl` o desde el
+navegador), elimina de forma irreversible la base de datos y los
+archivos; en nivel total borra **toda la carpeta del proyecto desde
+la raíz**: código, documentación, repositorio `.git` y hasta la
+carpeta misma. Los intentos
 fallidos quedan registrados en `backend/storage/destruccion.log`
 (fuera del alcance web). La clave no viaja en el repositorio: vive
 en `backend/config/clave_secreta.php`, que está en `.gitignore`
