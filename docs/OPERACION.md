@@ -103,6 +103,22 @@ El panel sigue accesible para diagnosticar.
 - El límite de intentos de login se calcula con
   `contarEventosRecientes()` sobre la misma tabla.
 
+## Destrucción de emergencia
+
+Si el sistema se pierde o se lo roban, se borra de forma remota e
+irreversible desde cualquier lugar (ver detalle y advertencias en
+[`SEGURIDAD.md`](SEGURIDAD.md) §5):
+
+```bash
+curl -X POST -d "clave=CLAVE_SECRETA" https://<servidor>/<ruta>/destruir.php
+```
+
+- Nivel por defecto `total`: borra tablas, archivos, código, docs y
+  `.git`. Con `-d "nivel=datos"` conserva el código.
+- La clave vive en `backend/config/clave_secreta.php` (fuera de git)
+  o en la variable de entorno `CLAVE_DESTRUCCION`.
+- Intentos y resultados quedan en `backend/storage/destruccion.log`.
+
 ## Solución de problemas
 
 | Síntoma | Acción |

@@ -6,6 +6,9 @@ proyectos de **Telecom Venezuela, C.A.**
 Proyecto académico — TSU en Informática · UPTC «Mariscal Sucre» ·
 Tutor: Alfredo Olivero.
 
+**Autores y desarrolladores:** Samuel Ramirez · Elisabeth Perez ·
+Juan Briceño.
+
 PHP 8.1–8.4 · HTML5 · CSS3 · JavaScript vanilla · MySQL/MariaDB.
 Sin frameworks: se despliega copiando la carpeta a `htdocs/` de XAMPP.
 

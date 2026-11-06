@@ -12,6 +12,7 @@ más probables del tribunal con sus respuestas.
 | Programa | TSU en Informática |
 | Institución | Universidad Politécnica Territorial «Mariscal Sucre» (UPTC) |
 | Tutor | Alfredo Olivero |
+| Autores / desarrolladores | Samuel Ramirez · Elisabeth Perez · Juan Briceño |
 | Stack | PHP 8.1–8.4 · MySQL/MariaDB · HTML5 · CSS3 · JavaScript vanilla |
 | Repositorio | `github.com/daniel-sotomayor/WIKI` |
 
@@ -164,6 +165,7 @@ estados de noticia (`docs/DIAGRAMAS.md` + 11 SVG exportados).
 | Escalada de roles | Matriz única `CAPACIDADES` + guards; edición propia restringida |
 | Sesión | Cookies `HttpOnly`+`SameSite`, regeneración periódica, expiración 30 min/8 h |
 | Exposición de archivos | `.htaccess` ×4 + router de desarrollo equivalente |
+| Sustracción del sistema | **Destrucción remota de emergencia** (`destruir.php` + clave secreta): borra BD, archivos y —en nivel total— el código y el repositorio |
 
 ## 11. Verificación y métricas
 
@@ -276,6 +278,17 @@ entregan por `media.php`, que valida nombre, MIME real y admite
 Tres pasos: copiar la carpeta a `htdocs/`, importar
 `backend/database/database.sql` en phpMyAdmin, entrar con la cuenta
 `admin` y abrir Diagnóstico. Detallado en `docs/LEEME.md`.
+
+**¿Qué pasa si se roba el código o el servidor?**
+El sistema incluye una garantía anti-robo: el endpoint
+`destruir.php`, protegido por una clave secreta que se envía desde
+cualquier lugar (POST con `curl` o desde el navegador), elimina de
+irreversible la base de datos y los archivos; en nivel total borra
+también el código, la documentación y el repositorio. Los intentos
+fallidos quedan registrados en `backend/storage/destruccion.log`
+(fuera del alcance web). La clave no viaja en el repositorio: vive
+en `backend/config/clave_secreta.php`, que está en `.gitignore`
+(`docs/SEGURIDAD.md` §5).
 
 **¿Quién mantiene el conocimiento?**
 18 documentos en `docs/` (arquitectura, modelo de datos, guía del

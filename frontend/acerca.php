@@ -263,7 +263,8 @@ abrirPagina();
 
     <section class="proyecto-academico">
         <p>TelecomWiki — Proyecto Sociotecnológico · TSU Informática · UPTC «Mariscal Sucre»<br>
-           PNF en Informática · Tutor: Alfredo Olivero</p>
+           PNF en Informática · Tutor: Alfredo Olivero<br>
+           Autores y desarrolladores: <?= e(SITE_AUTORES) ?></p>
     </section>
 
 </div>

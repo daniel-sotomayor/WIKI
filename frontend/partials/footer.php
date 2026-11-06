@@ -53,7 +53,8 @@ $anio = date('Y');
     <div class="footer-bottom">
         <div class="container">
             <p>© <?= $anio ?> Telecom Venezuela, C.A. — Av. Andrés Bello, Torre Fondo Común, Caracas.
-               Todos los derechos reservados.</p>
+               Todos los derechos reservados.<br>
+               Autores y desarrolladores: <?= e(SITE_AUTORES) ?></p>
         </div>
     </div>
 </footer>

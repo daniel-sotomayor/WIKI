@@ -35,6 +35,10 @@ define('SITE_URL',  getenv('SITE_URL')  ?: 'http://localhost/telecom_wiki/fronte
 define('SITE_NAME', getenv('SITE_NAME') ?: 'TelecomWiki');
 define('SITE_TAGLINE', 'Gestión y Estandarización de Documentación Técnica');
 
+// ── Autores y desarrolladores del proyecto ──────────────────
+define('SITE_AUTORES', getenv('SITE_AUTORES')
+    ?: 'Samuel Ramirez · Elisabeth Perez · Juan Briceño');
+
 // ── Límites de subida de archivos ───────────────────────────
 define('UPLOAD_MAX_FILESIZE', 50 * 1024 * 1024);   // 50 MB (también se ajusta en php.ini)
 define('UPLOAD_LIMITS', [
@@ -102,3 +106,16 @@ define('ALERT_CLASES', [
     'info'    => 'alert alert-info',
     'warning' => 'alert alert-warning',
 ]);
+
+// ── Destrucción de emergencia (docs/SEGURIDAD.md §5) ────────
+// La clave secreta vive en backend/config/clave_secreta.php
+// (archivo fuera de git) o en la variable de entorno
+// CLAVE_DESTRUCCION. Si está vacía, /destruir.php queda
+// deshabilitado y responde 403.
+$archivoClave = __DIR__ . '/clave_secreta.php';
+if (is_file($archivoClave)) {
+    require $archivoClave;
+}
+if (!defined('CLAVE_DESTRUCCION')) {
+    define('CLAVE_DESTRUCCION', getenv('CLAVE_DESTRUCCION') ?: '');
+}

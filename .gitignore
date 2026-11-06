@@ -5,6 +5,7 @@
 .env
 .env.*
 !.env.example
+/backend/config/clave_secreta.php
 
 # Archivos cargados por usuarios
 /backend/storage/uploads/*

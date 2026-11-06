@@ -5,6 +5,9 @@ con qué está hecho, cómo está organizado, cómo se configura y cómo se
 extiende. Pensado para que un integrante nuevo del equipo pueda
 entienderlo en una sola lectura y saber dónde buscar después.
 
+**Autores y desarrolladores:** Samuel Ramirez · Elisabeth Perez ·
+Juan Briceño.
+
 | Si querés… | Andá a |
 |---|---|
 | Instalarlo hoy | [`LEEME.md`](LEEME.md) |

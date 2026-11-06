@@ -6,6 +6,9 @@ para los proyectos de Telecom Venezuela, C.A.
 Proyecto académico · TSU en Informática · Universidad Politécnica Territorial
 «Mariscal Sucre» · Tutor: Alfredo Olivero.
 
+**Autores y desarrolladores:** Samuel Ramirez · Elisabeth Perez ·
+Juan Briceño.
+
 ---
 
 ## 1. Qué es este sistema

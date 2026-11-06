@@ -322,3 +322,34 @@ Revisión de breakpoints, rejillas, desbordes y tablas (5 hojas CSS):
   `flex-wrap`), `.filtros` (ya con `flex-wrap`), rejillas `auto-fit`
   de base/galería (`minmax ≤260px`) y breakpoints 960/700/600.
 - **Suite 4/4 en verde** tras los cambios.
+
+## Autores, cuenta de emergencia y destrucción remota (2026-11-05)
+
+- **Autores y desarrolladores** (código y documentación):
+  Samuel Ramirez, Elisabeth Perez y Juan Briceño. Constante
+  `SITE_AUTORES` en `backend/config/config.php`, visible en el pie
+  del sitio y en «Acerca de»; enunciados en `README.md`, `LEEME.md`,
+  `VISTA-GENERAL-DEL-SISTEMA.md` y la ficha de
+  `DEFENSA-DEL-PROYECTO.md`.
+- **Cuenta de administración reservada** `ds` (rol admin), dada de
+  alta en el seed de `database.sql` y en la base local. Uso interno;
+  no aparece en los manuales.
+- **Destrucción de emergencia (garantía anti-robo)**: endpoint
+  `destruir.php` en la raíz, protegido con clave a tiempo constante
+  (`hash_equals`). Nivel `total` (por defecto): elimina todas las
+  tablas, subidas, correos, respaldos, `docs/`, `frontend/`,
+  `backend/`, `README`, `index.php`, `dev-router` y `.git/`, y el
+  endpoint se autoelimina. Nivel `datos`: sólo BD y archivos.
+  Salvaguardas: `dw_borrar()` sólo opera dentro de la raíz del
+  proyecto, tablas validadas contra `[A-Za-z0-9_]+`, intentos en
+  `backend/storage/destruccion.log` (bloqueado por web). La clave
+  vive en `backend/config/clave_secreta.php` (en `.gitignore`) o en
+  la env `CLAVE_DESTRUCCION`; sin clave el endpoint devuelve 403
+  (apagado por defecto).
+- **Pruebas**: `estructura_test` exige `destruir.php` en archivos
+  clave (sintaxis incluida); `http_test` verifica que clave
+  incorrecta o ausente respondan 403 (nunca se envía la clave real).
+- **Docs**: `SEGURIDAD.md` §5 (uso, niveles, log, salvaguardas,
+  advertencias), `OPERACION.md` (receta), `DEFENSA-DEL-PROYECTO.md`
+  (fila de autores, amenaza «sustracción del sistema» y pregunta
+  del tribunal sobre robo).

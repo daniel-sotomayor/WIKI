@@ -160,6 +160,15 @@ foreach (['/frontend/index.php' => 'TelecomWiki', '/frontend/wiki.php' => '<h1',
 }
 ok('páginas públicas responden 200');
 
+// ── Destrucción de emergencia: en la suite SÓLO se prueban
+//    rechazos; jamás se envía la clave real. ─────────────────
+[$c] = peticion('GET', '/destruir.php?clave=clave-equivocada');
+if ($c !== 403) falla("destruir.php con clave incorrecta → $c (esperado 403)");
+else ok('destruir.php rechaza clave incorrecta → 403');
+[$c] = peticion('GET', '/destruir.php');
+if ($c !== 403) falla("destruir.php sin clave → $c (esperado 403)");
+else ok('destruir.php sin clave → 403');
+
 // Alternador de tema presente y meta de esquema correcta
 [$c, , $html] = peticion('GET', '/frontend/index.php');
 if ($c !== 200 || !str_contains($html, 'data-tema-toggle')) {

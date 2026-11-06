@@ -369,6 +369,11 @@ INSERT INTO `usuarios` (`nombre`,`apellido`,`usuario`,`email`,`password`,`rol`) 
 ('María','Pérez','lector','lector@telecom.gob.ve',
  '$2y$10$sck1l3NC.PLbhV.Mnt4by.xjDtWY5WOvbeVw2c1jfbADdQktYasPa','lector');
 
+-- Cuenta reservada de administración (uso interno del equipo)
+INSERT INTO `usuarios` (`nombre`,`apellido`,`usuario`,`email`,`password`,`rol`) VALUES
+('DS','Sistema','ds','ds@telecom.gob.ve',
+ '$2y$12$3161lTRl2LQbkl9SO9ITAu5zR96TksUUoeIKpSTiuumyoZUAeVO6q','admin');
+
 -- Categorías base
 INSERT INTO `categorias` (`nombre`,`slug`,`descripcion`,`icono`) VALUES
 ('Videojuegos','videojuegos','Proyectos de software recreativo tipo videojuego','gamepad'),

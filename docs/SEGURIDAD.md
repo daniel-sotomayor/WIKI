@@ -213,3 +213,64 @@ URL, cierres de etiqueta sueltos y contenido legítimo (tablas, listas,
 
 **Pendiente al instalar las extensiones**: repetir la misma batería con la
 ruta `DOMDocument` (`filtrarDOM()`), que es la que se usa en XAMPP.
+
+---
+
+## 5. Destrucción de emergencia (garantía anti-robo)
+
+Si el repositorio o el servidor caen en manos ajenas, el equipo puede
+**borrar el sistema desde cualquier lugar del mundo**: el endpoint
+`destruir.php` (en la raíz del proyecto) elimina de forma irreversible
+la base de datos y los archivos; en nivel `total` (por defecto) borra
+además el código, la documentación y el repositorio `.git`, y el
+propio endpoint se autoelimina.
+
+**Uso** (preferir POST para no dejar la clave en los logs de acceso):
+
+```bash
+# Destrucción total (BD + archivos + código + docs + .git)
+curl -X POST -d "clave=CLAVE_SECRETA" \
+     https://<servidor>/<ruta>/destruir.php
+
+# Sólo datos (conserva el código instalado)
+curl -X POST -d "clave=CLAVE_SECRETA" -d "nivel=datos" \
+     https://<servidor>/<ruta>/destruir.php
+```
+
+También acepta GET (`/destruir.php?clave=…`), pensado para dispararlo
+desde el navegador de un celular en emergencia.
+
+**La clave** no está en el repositorio:
+
+- Vive en `backend/config/clave_secreta.php`, archivo declarado en
+  `.gitignore` (crear uno por instalación y cambiarla).
+- Alternativa: variable de entorno `CLAVE_DESTRUCCION`.
+- Si ambas faltan, el endpoint responde `403 Destruccion no
+  configurada`: la garantía queda **apagada por defecto** hasta que
+  alguien la configure.
+- La comparación es a tiempo constante (`hash_equals`).
+
+**Qué borra cada nivel**
+
+| Nivel | Objetos eliminados |
+|---|---|
+| `total` (defecto) | Todas las tablas · subidas · correos · respaldos · `docs/` · `frontend/` · `backend/` · `README` · `index.php` · `dev-router` · `.git/` · `destruir.php` (se borra a sí mismo) |
+| `datos` | Todas las tablas · subidas · correos · respaldos (el código queda) |
+
+**Registro**: cada intento (fallido o exitoso) se apunta a
+`backend/storage/destruccion.log` con fecha, IP y nivel; la extensión
+`.log` está bloqueada por `.htaccess` y el directorio por el router,
+o sea que no se sirve por web. Tras una destrucción `total` se recrea
+sólo `backend/storage/` para conservar esa constancia.
+
+**Salvaguardas del código**: `dw_borrar()` sólo admite rutas dentro
+de la raíz del proyecto (nunca la raíz ni rutas ajenas), valida cada
+nombre de tabla contra `[A-Za-z0-9_]+` antes del `DROP`, y jamás se
+prueba la clave real en las pruebas automáticas (`http_test` sólo
+verifica que clave incorrecta o ausente den `403`).
+
+**Advertencias**:
+- Es **irreversible**; no existe papelera ni confirmación extra.
+- No probar contra la instalación de desarrollo local ni contra la
+  copia de trabajo: se borraría el código de la máquina propia.
+- Rotar la clave después de cualquier uso compartido del archivo.
