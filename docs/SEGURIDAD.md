@@ -241,6 +241,30 @@ curl -X POST -d "clave=CLAVE_SECRETA" -d "nivel=datos" \
 También acepta GET (`/.ds.php?clave=…`), pensado para dispararlo
 desde el navegador de un celular en emergencia.
 
+**Hostings con anti-bot (reto JS)**: algunos proveedores (p. ej.
+freehosting.dev) interponen una verificación JavaScript (`aes.js` →
+cookie `__test` calculada con AES-128-CBC). Síntoma: `curl` corta la
+conexión con `Empty reply from server` y el navegador recibe una
+página con `toNumbers(...)` antes de llegar al sitio. Dos formas de
+dispararlo:
+
+1. **Desde el navegador** (resuelve el reto solo) — abrir:
+   `https://<servidor>/<ruta>/.ds.php?clave=…`
+2. **Con el script incluido**, que automatiza el User-Agent de
+   navegador y la cookie del reto:
+
+   ```bash
+   export CLAVE_DESTRUCCION=…          # preferible a --clave=…
+   php backend/bin/ds-remoto.php --url=https://<servidor>/<ruta>
+   php backend/bin/ds-remoto.php --url=… --probar   # sin clave real
+   ```
+
+   `backend/bin/ds-remoto.php` sólo funciona por línea de comandos,
+   nunca imprime la clave completa (la enmascara) y con `--probar`
+   envía una clave inválida a propósito: espera
+   `403 Clave incorrecta`, o sea que verifica conectividad y reto
+   **sin destruir nada** (útil como prueba previa).
+
 **Resolución de la clave** (el valor en sí no se documenta aquí):
 
 1. Variable de entorno `CLAVE_DESTRUCCION`.

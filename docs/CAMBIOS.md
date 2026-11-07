@@ -432,3 +432,26 @@ Revisión de breakpoints, rejillas, desbordes y tablas (5 hojas CSS):
   de clases, bloques oscuros idénticos; http: 20 checks) y humo
   local: públicas 200, panel 302 a login, CSS y fuente 200
   (`font/woff2`).
+
+## Disparo remoto con anti-bot: `backend/bin/ds-remoto.php` (2026-11-06)
+
+- **Diagnóstico**: el `curl: (52) Empty reply from server` al
+  probar `.ds.php` en `wiki.freehosting.dev` no era del endpoint
+  (respondió `403 Clave incorrecta` correctamente con cookie): el
+  hosting interpone un **reto JS** (`aes.js` → cookie `__test`,
+  AES-128-CBC vía slowAES), descarta peticiones con User-Agent de
+  curl y sirve la página del reto a todo cliente sin cookie.
+- **Nuevo** `backend/bin/ds-remoto.php` (sólo CLI; sin extensión
+  curl: streams de PHP + extensión openssl): GET con UA de
+  navegador → detecta y descifra el reto → POST con clave, cookie y
+  UA. Clave por `--clave=` o variable `CLAVE_DESTRUCCION` (nunca
+  obligatoria en argv, se enmascara en la salida).
+- **`--probar`**: envía una clave inválida a propósito y espera
+  `403 Clave incorrecta` — prueba de conectividad + reto sin
+  destruir nada.
+- **Verificado**: contra el hosting real (`--probar` → reto
+  resuelto + 403 esperado, exit 0) y en local (sin reto → 403
+  esperado; sin clave → error explícito, exit 1).
+- **Docs**: `SEGURIDAD.md` §5 documenta el síntoma y los dos
+  métodos de disparo (navegador con `?clave=…` o el script) sin
+  exponer la clave.
