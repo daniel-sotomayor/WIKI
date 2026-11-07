@@ -7,7 +7,7 @@
 /* ── Portada: hero ────────────────────────────────────────── */
 
 .hero {
-  background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+  background: var(--grad-brand);
   color: #fff;
   padding: 4.5rem 0 4rem;
   position: relative;
@@ -59,13 +59,24 @@
   margin-bottom: 1rem;
 }
 .hero__titulo {
-  font-size: clamp(2rem, 4.4vw, 3rem);
+  font-size: var(--fs-3xl);
   font-weight: 700;
   color: #fff;
   margin-bottom: 1rem;
-  line-height: 1.12;
+  line-height: var(--lh-tight);
+  letter-spacing: -.02em;
 }
+/* Resaltado con degradado dorado (respaldo: color sólido si el
+   navegador no soporta background-clip: text) */
 .hero__titulo .destacado { color: var(--gold-lt); }
+@supports (-webkit-background-clip: text) or (background-clip: text) {
+  .hero__titulo .destacado {
+    background: var(--grad-gold);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
 .hero__texto {
   font-size: 1.08rem;
   color: rgba(255,255,255,.82);
@@ -76,11 +87,23 @@
 
 .hero-stats {
   display: flex;
-  gap: 2.5rem;
+  gap: 1rem;
   margin-top: 2.75rem;
-  padding-top: 1.75rem;
-  border-top: 1px solid rgba(255,255,255,.15);
   flex-wrap: wrap;
+}
+.hero-stat {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: var(--radius-md);
+  padding: .85rem 1.2rem;
+  min-width: 148px;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  transition: background var(--transition), transform var(--transition);
+}
+.hero-stat:hover {
+  background: rgba(255,255,255,.13);
+  transform: translateY(-2px);
 }
 .hero-stat__num {
   font-family: var(--font-display);

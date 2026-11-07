@@ -27,12 +27,20 @@
 /* ── Cabecera ─────────────────────────────────────────────── */
 
 .site-header {
-  background: var(--white);
+  background: var(--header-bg);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  backdrop-filter: saturate(180%) blur(12px);
   border-bottom: 1px solid var(--grey-300);
   position: sticky;
   top: 0;
   z-index: 100;
   box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition), border-color var(--transition);
+}
+/* Sombra reforzada al hacer scroll (main.js alterna la clase) */
+.site-header.is-scrolled {
+  box-shadow: var(--shadow-md);
+  border-bottom-color: transparent;
 }
 .site-header__inner {
   display: flex;
@@ -80,7 +88,11 @@
   transition: background var(--transition), color var(--transition);
 }
 .site-nav a:hover { background: var(--surface-2); color: var(--heading); }
-.site-nav a.is-active { background: var(--surface-2); color: var(--blue); font-weight: 600; }
+.site-nav a.is-active {
+  background: var(--info-bg);
+  color: var(--link);
+  font-weight: 600;
+}
 
 /* Botón hamburguesa (móvil) */
 .nav-toggle {
@@ -155,6 +167,7 @@ html[data-tema-pref='oscuro'] .theme-toggle { border-color: var(--blue-lt); }
   padding: 3rem 0 0;
   margin-top: 4rem;
   font-size: .875rem;
+  border-top: 2px solid var(--gold);
 }
 .footer-grid {
   display: grid;

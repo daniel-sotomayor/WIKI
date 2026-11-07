@@ -3,8 +3,8 @@
 TelecomWiki usa un sistema de diseño propio en CSS plano (sin
 preprocesador): tokens en variables CSS, una hoja por capa y
 componentes reutilizables generados por helpers PHP. El look & feel
-es institucional: azul marino, acentos dorados, tipografía del
-sistema.
+es institucional: azul marino, acentos dorados, tipografía **Inter**
+auto-hospedada (woff2 variable, sin peticiones a terceros).
 
 ## Hojas de estilo y orden de carga
 
@@ -30,20 +30,34 @@ estas hojas (lo valida `estructura_test.php`, sección 3).
   `--gold`/`--gold-lt` (acento), grises `--grey-100…700`, texto
   `--text`/`--text-muted`, estados `--ok-*`, `--warn-*`, `--danger-*`,
   `--info-*` (fondo+texto).
-- **Radio**: `--radius` 6px, `--radius-md` 9px, `--radius-lg` 12px.
-- **Sombras**: `--shadow-sm/md/lg` (tinte navy translúcido).
-- **Tipografía**: `--font-body` (system-ui…), `--font-display`
-  (para títulos), `--font-mono` (códigos técnicos).
-- **Transición**: `--transition` 180ms ease.
+- **Radio**: `--radius` 8px, `--radius-md` 12px, `--radius-lg` 16px.
+- **Sombras**: `--shadow-sm/md/lg` en capas (sombra de contacto +
+  elevación, tinte navy translúcido; más densas en el tema oscuro).
+- **Degradados de marca**: `--grad-brand` (navy→azul) y
+  `--grad-gold` (dorado→dorado claro); materiales fijos, válidos en
+  ambos temas.
+- **Tipografía**: fuente **Inter** auto-hospedada en
+  `frontend/assets/fonts/inter-var.woff2` (variable 100–900,
+  `font-display: swap`, respaldo en la pila del sistema; el MIME
+  `font/woff2` se declara en el `.htaccess` por el `nosniff`).
+  Escala por tokens: `--fs-xs … --fs-3xl` (los títulos usan
+  `clamp()`), ritmos `--lh-tight/snug/normal`, `--font-mono` para
+  códigos técnicos.
+- **Movimiento**: `--ease` (cubic-bezier suave) y `--transition`
+  180ms sobre `--ease` para toda transición común.
+- **Cabecera**: `--header-bg` (blanco/navy al 88 %) para el efecto
+  translúcido con `backdrop-filter`.
 
 Las páginas deben consumir tokens, nunca colores literales, salvo
 justificación documentada.
 
 ## Componentes (resumen)
 
-- **Botones**: `.btn`, variantes `.btn--primario`, `.btn--peligro`,
-  `.btn--fantasma`, `.btn--chico`. Las acciones destructivas usan
-  confirmación JS (`confirmarAccion` en `js/app.js`).
+- **Botones**: `.btn`, variantes `.btn-primary`, `.btn-gold`,
+  `.btn-outline`, `.btn-ghost`, `.btn-danger`, tamaños `.btn-sm`/
+  `.btn-lg`. Elevación al hover, `scale(.98)` al pulsar; las
+  acciones destructivas usan confirmación JS (`confirmarAccion` en
+  `js/main.js`).
 - **Tarjetas**: `.tarjeta` para grid de proyectos/artículos/noticias;
   helpers `tarjetaProyecto()`, `tarjetaArticulo()`, `tarjetaNoticia()`
   emiten el marcado.
@@ -62,7 +76,8 @@ justificación documentada.
 
 ## Responsive
 
-- Breakpoints usados: **700px** (móvil/tablet) y **~1000px** (panel).
+- Breakpoints usados: **600px** (cabecera compacta), **700px**
+  (móvil/tablet) y **960px** (navegación del panel).
 - La navegación pública colapsa a menú desplegable en móvil
   (checkbox + label, accesible por teclado).
 - El panel usa sidebar colapsable en pantallas chicas.

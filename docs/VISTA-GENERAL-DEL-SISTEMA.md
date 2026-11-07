@@ -274,10 +274,11 @@ Modelo completo y matriz de amenazas: [`SEGURIDAD.md`](SEGURIDAD.md).
 ## 8. Experiencia y diseño
 
 - **Sistema de diseño propio**: tokens CSS en `:root` (colores,
-  radios, sombras, tipografía del sistema, transiciones), 5 hojas
+  radios, sombras, escala tipográfica Inter auto-hospedada,
+  degradados, transiciones), 5 hojas
   (`base`, `layout`, `components`, `pages`, `admin`), componentes
   generados por helpers (tarjetas, badges, chips, campos, galería,
-  paginación), iconos SVG inline. Responsive en 700/1000 px,
+  paginación), iconos SVG inline. Responsive en 600/700/960 px,
   accesibilidad (h1 único, alt, focus visible, `prefers-reduced-motion`).
 - **Modo oscuro/claro**: capa de tokens semánticos
   (`--bg`, `--surface`, `--heading`, `--border`, roles, estados) con

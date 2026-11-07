@@ -10,14 +10,32 @@
 .lista-stats { margin-bottom: 1.5rem; }
 
 .tarjeta-stat {
+  position: relative;
   background: var(--white);
   border: 1px solid var(--grey-300);
   border-radius: var(--radius-lg);
   padding: 1.1rem 1.2rem;
+  padding-left: 1.45rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   min-height: 88px;
+  overflow: hidden;
+  transition: box-shadow var(--transition), transform var(--transition),
+              border-color var(--transition);
+}
+/* Franja de acento izquierda (azul por defecto) */
+.tarjeta-stat::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: var(--blue);
+}
+.tarjeta-stat:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--grey-500);
 }
 .tarjeta-stat strong {
   font-family: var(--font-display);
@@ -25,11 +43,13 @@
   font-weight: 700;
   color: var(--blue);
   line-height: 1.15;
+  font-variant-numeric: tabular-nums;
 }
 .tarjeta-stat span { font-size: .78rem; color: var(--text-muted); }
+.tarjeta-stat--aviso::before { background: var(--warn-line); }
 .tarjeta-stat--aviso strong { color: var(--warn-fg); }
 
-.tarjeta-stat--enlace { padding: 0; }
+.tarjeta-stat--enlace { padding: 0; padding-left: 4px; }
 .tarjeta-stat--enlace a {
   display: flex;
   flex-direction: column;
@@ -42,7 +62,7 @@
   text-decoration: none;
   transition: background var(--transition);
 }
-.tarjeta-stat--enlace a:hover { background: var(--off-white); color: inherit; }
+.tarjeta-stat--enlace a:hover { background: var(--surface-2); color: inherit; }
 .tarjeta-stat--enlace a:hover span { color: var(--blue-lt); }
 
 /* ── Accesos rápidos ──────────────────────────────────────── */

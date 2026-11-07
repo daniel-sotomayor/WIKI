@@ -61,6 +61,16 @@
       }
     }
 
+    // ── Sombra reforzada de la cabecera al hacer scroll ────
+    var cabecera = document.querySelector('.site-header');
+    if (cabecera) {
+      var alHacerScroll = function () {
+        cabecera.classList.toggle('is-scrolled', window.scrollY > 8);
+      };
+      alHacerScroll();
+      window.addEventListener('scroll', alHacerScroll, { passive: true });
+    }
+
     // ── Animación de aparición al hacer scroll ─────────────
     var selectoresReveal = [
       '#contenido .page-head',

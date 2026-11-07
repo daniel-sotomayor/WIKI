@@ -4,9 +4,22 @@
    (insignias, chips, alertas, paginación, barra de avance).
 
    Paleta: azul marino institucional + dorado venezolano + blanco.
-   Tipografía: pila del sistema (sin peticiones a terceros, compatible
-   con la política de seguridad de contenidos y usable sin internet).
+   Tipografía: Inter auto-hospedada (woff2 variable, sin peticiones a
+   terceros: compatible con la CSP y usable sin internet) con respaldo
+   en la pila del sistema.
    ============================================================ */
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('../assets/fonts/inter-var.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC,
+                 U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+                 U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212,
+                 U+2215, U+FEFF, U+FFFD;
+}
 
 :root {
   color-scheme: light;
@@ -35,13 +48,17 @@
   --danger-bg: #FEE2E2;   --danger-fg: #991B1B;
   --info-bg:   #DBEAFE;   --info-fg:   #1E40AF;
 
-  /* ── Forma y sombra ── */
-  --radius:    6px;
-  --radius-md: 9px;
-  --radius-lg: 12px;
-  --shadow-sm: 0 1px 3px rgba(11,31,58,.10);
-  --shadow-md: 0 4px 16px rgba(11,31,58,.13);
-  --shadow-lg: 0 8px 32px rgba(11,31,58,.18);
+  /* ── Forma, elevación y degradados ── */
+  --radius:    8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 2px rgba(11,31,58,.06), 0 1px 3px rgba(11,31,58,.08);
+  --shadow-md: 0 4px 12px rgba(11,31,58,.08), 0 2px 4px rgba(11,31,58,.06);
+  --shadow-lg: 0 16px 40px rgba(11,31,58,.12), 0 4px 12px rgba(11,31,58,.08);
+
+  /* Degradados de marca (materiales fijos, válidos en ambos temas) */
+  --grad-brand: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+  --grad-gold:  linear-gradient(135deg, var(--gold) 0%, var(--gold-lt) 100%);
 
   /* ── Semánticos: son los que usan las vistas ──
      En modo claro derivan de los materiales; en modo oscuro se
@@ -59,6 +76,7 @@
   --muted-strong: var(--grey-700);    /* texto secundario fuerte */
   --link:         var(--blue-lt);     /* enlaces */
   --focus-ring:   0 0 0 3px rgba(37,99,235,.15);
+  --header-bg:    rgba(255,255,255,.88);  /* cabecera translúcida */
 
   /* Semáforo: líneas de borde y estados sólidos */
   --ok-line:      #22C55E;   --ok-solid:     #22C55E;
@@ -73,15 +91,32 @@
   --role-supervisor-bg: #EDE9FE;  --role-supervisor-fg: #6D28D9;
   --role-editor-bg:     #DBEAFE;  --role-editor-fg:     #1E40AF;
 
-  /* ── Tipografía ── */
-  --font-body:    system-ui, -apple-system, "Segoe UI", Roboto,
-                  "Helvetica Neue", Arial, sans-serif;
-  --font-display: ui-sans-serif, system-ui, -apple-system,
+  /* ── Tipografía ──
+     Inter (auto-hospedada) + escala fluida y ritmo de línea. */
+  --font-body:    'Inter', system-ui, -apple-system, "Segoe UI",
+                  Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: 'Inter', ui-sans-serif, system-ui, -apple-system,
                   "Segoe UI", Roboto, sans-serif;
   --font-mono:    ui-monospace, SFMono-Regular, "SF Mono", Menlo,
                   Consolas, "Liberation Mono", monospace;
 
-  --transition: 180ms ease;
+  /* Escala tipográfica (base 15px) */
+  --fs-xs:   .8rem;      /* notas, badges */
+  --fs-sm:   .875rem;    /* ayuda, tablas densas */
+  --fs-base: .9375rem;   /* cuerpo */
+  --fs-md:   1rem;       /* cuerpo destacado */
+  --fs-lg:   1.125rem;   /* subtítulos de tarjeta */
+  --fs-xl:   clamp(1.25rem, 1.1rem + .6vw, 1.5rem);    /* h3/h4 */
+  --fs-2xl:  clamp(1.5rem, 1.25rem + 1.1vw, 2rem);     /* h2 */
+  --fs-3xl:  clamp(2rem, 1.6rem + 1.8vw, 3rem);        /* h1 */
+
+  --lh-tight:   1.2;
+  --lh-snug:    1.45;
+  --lh-normal:  1.7;
+
+  /* ── Movimiento ── */
+  --ease:       cubic-bezier(.2, .7, .3, 1);
+  --transition: 180ms var(--ease);
 }
 
 /* ── Modo oscuro ─────────────────────────────────────────────
@@ -111,6 +146,7 @@
   --heading:      #F0F4FA;
   --link:         #7FB0FF;
   --focus-ring:   0 0 0 3px rgba(127,176,255,.30);
+  --header-bg:    rgba(22,32,46,.88);
 
   --ok-bg:     #0C2C1C;   --ok-fg:     #7CE0A6;
   --warn-bg:   #3A2E0A;   --warn-fg:   #FCD34D;
@@ -125,9 +161,9 @@
   --role-supervisor-bg: #2C2150;  --role-supervisor-fg: #C4B5FD;
   --role-editor-bg:     #16325C;  --role-editor-fg:     #BFDBFE;
 
-  --shadow-sm: 0 1px 3px rgba(0,0,0,.40);
-  --shadow-md: 0 4px 16px rgba(0,0,0,.50);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,.60);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.35), 0 1px 3px rgba(0,0,0,.30);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.45), 0 2px 4px rgba(0,0,0,.30);
+  --shadow-lg: 0 16px 40px rgba(0,0,0,.55), 0 4px 12px rgba(0,0,0,.35);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -151,6 +187,7 @@
     --heading:      #F0F4FA;
     --link:         #7FB0FF;
     --focus-ring:   0 0 0 3px rgba(127,176,255,.30);
+    --header-bg:    rgba(22,32,46,.88);
 
     --ok-bg:     #0C2C1C;   --ok-fg:     #7CE0A6;
     --warn-bg:   #3A2E0A;   --warn-fg:   #FCD34D;
@@ -165,9 +202,9 @@
     --role-supervisor-bg: #2C2150;  --role-supervisor-fg: #C4B5FD;
     --role-editor-bg:     #16325C;  --role-editor-fg:     #BFDBFE;
 
-    --shadow-sm: 0 1px 3px rgba(0,0,0,.40);
-    --shadow-md: 0 4px 16px rgba(0,0,0,.50);
-    --shadow-lg: 0 8px 32px rgba(0,0,0,.60);
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.35), 0 1px 3px rgba(0,0,0,.30);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.45), 0 2px 4px rgba(0,0,0,.30);
+    --shadow-lg: 0 16px 40px rgba(0,0,0,.55), 0 4px 12px rgba(0,0,0,.35);
   }
 }
 
@@ -175,15 +212,36 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  /* la cabecera es sticky: los anclas no deben quedar debajo */
+  scroll-padding-top: 5.5rem;
+}
+
+/* Selección de texto con la identidad de marca */
+::selection { background: var(--gold-lt); color: var(--navy); }
+
+/* Barra de desplazamiento fina y tematizada */
+* { scrollbar-width: thin; scrollbar-color: var(--grey-500) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--grey-500);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover { background-color: var(--blue); }
 
 body {
   font-family: var(--font-body);
-  font-size: 15px;
-  line-height: 1.7;
+  font-size: var(--fs-base);
+  line-height: var(--lh-normal);
   color: var(--text);
   background: var(--off-white);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 img, svg, video { max-width: 100%; display: block; }
@@ -195,7 +253,8 @@ a:hover { color: var(--gold); }
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   color: var(--heading);
-  line-height: 1.25;
+  line-height: var(--lh-tight);
+  letter-spacing: -.015em;
 }
 
 code, kbd, pre { font-family: var(--font-mono); font-size: .9em; }
@@ -416,18 +475,25 @@ code { background: var(--code-bg); padding: .1em .4em; border-radius: 4px; }
   min-width: 34px;
   padding: .35rem .7rem;
   border: 1px solid var(--grey-300);
-  border-radius: var(--radius);
+  border-radius: 999px;
   background: var(--white);
   font-size: .85rem;
   font-weight: 600;
   color: var(--grey-700);
+  transition: border-color var(--transition), color var(--transition),
+              box-shadow var(--transition);
 }
 .paginacion__btn:hover,
-.paginacion__num:hover { border-color: var(--blue-lt); color: var(--blue-lt); }
+.paginacion__num:hover {
+  border-color: var(--blue-lt);
+  color: var(--blue-lt);
+  box-shadow: var(--shadow-sm);
+}
 .paginacion__num.is-active {
   background: var(--blue);
   border-color: var(--blue);
   color: #fff;
+  box-shadow: var(--shadow-sm);
 }
 .paginacion__puntos { color: var(--grey-500); padding: 0 .2rem; }
 

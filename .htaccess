@@ -7,6 +7,10 @@
 # Sin listado de directorios si falta un index.php en alguna carpeta
 Options -Indexes
 
+# MIME explícito para la fuente Inter auto-hospedada: sin él, la
+# cabecera X-Content-Type-Options: nosniff impediría cargarla.
+AddType font/woff2 .woff2
+
 # No revelar la versión de Apache en respuestas de error
 ServerSignature Off
 

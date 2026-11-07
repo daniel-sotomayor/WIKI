@@ -394,3 +394,41 @@ Revisión de breakpoints, rejillas, desbordes y tablas (5 hojas CSS):
 - `clave_secreta.php` quedó como override opcional con el mismo
   comportamiento; `SEGURIDAD.md` §5 y la pregunta del tribunal de
   `DEFENSA-DEL-PROYECTO.md` describen el orden sin exponer el valor.
+
+## Rediseño visual — look profesional y moderno (2026-11-06)
+
+- **Tipografía**: Inter auto-hospedada en
+  `frontend/assets/fonts/inter-var.woff2` (woff2 variable 100–900,
+  48 KB, `font-display: swap`) con respaldo en la pila del sistema.
+  Sin peticiones a terceros: cumple la CSP (`font-src 'self'`) y
+  funciona sin internet. Se agregó `AddType font/woff2 .woff2` al
+  `.htaccess` porque `X-Content-Type-Options: nosniff` exige el MIME
+  correcto.
+- **Tokens nuevos** (`base.css`): escala tipográfica fluida
+  (`--fs-xs…--fs-3xl`, `--lh-*`), easing `--ease` (la transición
+  global ya lo usa), degradados `--grad-brand`/`--grad-gold`,
+  `--header-bg` para la cabecera translúcida. Radios 8/12/16 px y
+  sombras en capas (contacto + elevación), aplicadas también en los
+  dos bloques oscuros idénticos. Títulos con `letter-spacing`
+  negativo sutil y `text-rendering: optimizeLegibility`.
+- **Componentes**: botones con elevación al hover y `scale(.98)` al
+  pulsar (sombra en primario/dorado/contorno/peligro; `.btn-gold`
+  con degradado); tarjetas con lift de 4 px, sombra `lg` y título
+  que se tiñe al pasar el cursor; inputs con hover y foco con glow,
+  campo de archivo con estados hover/foco; tablas con cabecera de
+  2 px y fila con hover suave; paginación en píldoras; estados
+  vacíos (`.vacio`) como caja punteada sobre superficie.
+- **Estructura**: cabecera sticky translúcida con `backdrop-filter`
+  y sombra reforzada al hacer scroll (`.is-scrolled` la alterna
+  `main.js`, sin handlers en línea); nav activa con píldora teñida
+  (`--info-bg`/`--link`, par AA); footer con filete dorado; hero
+  con `--grad-brand`, resaltado dorado con `background-clip: text`
+  (respaldo vía `@supports`) y estadísticas tipo vidrio; anclas con
+  `scroll-padding-top` para la cabecera fija; selección de texto
+  dorada y barra de desplazamiento tematizada.
+- **Panel**: tarjetas de resumen con franja de acento, lift al
+  hover y cifras con `tabular-nums`.
+- **Verificación**: suite 4/4 en verde (estructura: CSP, cobertura
+  de clases, bloques oscuros idénticos; http: 20 checks) y humo
+  local: públicas 200, panel 302 a login, CSS y fuente 200
+  (`font/woff2`).
